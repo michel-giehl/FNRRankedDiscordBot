@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FNRTournamentBot.iml" filepath="$PROJECT_DIR$/FNRTournamentBot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FNRRegistration.iml" filepath="$PROJECT_DIR$/FNRRegistration.iml" />
     </modules>
   </component>
 </project>

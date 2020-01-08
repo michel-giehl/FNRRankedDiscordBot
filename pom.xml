@@ -4,9 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>FNRTournamentBot</groupId>
-    <artifactId>FNRTournamentBot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+    </parent>
+
+    <groupId>FNRSpring</groupId>
+    <artifactId>FNRSpring</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <java.version>11</java.version>
+    </properties>
 
     <repositories>
         <repository>
@@ -20,21 +30,12 @@
             <url>https://jcenter.bintray.com</url>
         </repository>
         <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-        <repository>
             <id>jcenter-snapshot</id>
             <url>https://oss.jfrog.org/artifactory/libs-release/</url>
         </repository>
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>fr.bmartel</groupId>
-            <artifactId>jspeedtest</artifactId>
-            <version>LATEST</version>
-        </dependency>
         <dependency>
             <groupId>com.moandjiezana.toml</groupId>
             <artifactId>toml4j</artifactId>
@@ -53,22 +54,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.3_462</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.brunocvcunha.jiphy</groupId>
-            <artifactId>jiphy</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>FNRTournamentBot</groupId>
-            <artifactId>FNRTournamentBot</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>4.0.0_45</version>
         </dependency>
         <dependency>
             <groupId>cn.kanejin.exts</groupId>
@@ -80,10 +66,65 @@
             <artifactId>jsoup</artifactId>
             <version>1.8.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>1.5.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
+        <!-- Spring Dependencies-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.outputDirectory}</targetPath>
+                <includes>
+                    <include>application.properties</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
 
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -92,8 +133,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>3.8.0</source>
-                    <target>3.8.0</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
 

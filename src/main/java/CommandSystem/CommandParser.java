@@ -1,14 +1,13 @@
 package CommandSystem;
 
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import util.BotSettings;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 
 public class CommandParser {
 
     public static commandContainer parser(String raw, MessageReceivedEvent e) {
-        String prefix = BotSettings.prefix;
+        String prefix = "!";
         String beheaded = raw.replaceFirst(prefix, "");
         String[] splitBeheaded = beheaded.split(" ");
         String invoke = splitBeheaded[0];

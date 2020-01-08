@@ -6,11 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="FNRTournamentBot" />
+        <module name="FNRRegistration" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="FNRTournamentBot" target="3.8.0" />
+      <module name="FNRRegistration" target="11" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="FNRRegistration" options="-parameters" />
+    </option>
   </component>
 </project>
