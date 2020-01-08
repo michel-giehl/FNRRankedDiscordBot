@@ -7,12 +7,14 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
+@Component
 public class Boxfights_1v1_DM implements Match {
 
     private long id;

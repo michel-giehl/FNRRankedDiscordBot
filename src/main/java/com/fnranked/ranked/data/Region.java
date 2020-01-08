@@ -1,7 +1,7 @@
 package com.fnranked.ranked.data;
 
 public enum  Region {
-    EU("EU"),
+    EUROPE("EU"),
     NA_WEST("NAW"),
     NA_EAST("NAE"),
     OCEANIA("OCE"),
