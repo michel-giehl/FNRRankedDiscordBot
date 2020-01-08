@@ -1,4 +1,4 @@
-package com.fnranked.ranked.rest;
+package com.fnranked.ranked.data;
 
 /**
  * Represents a fortnite presence Object

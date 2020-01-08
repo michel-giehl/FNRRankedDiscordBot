@@ -2,8 +2,6 @@ package com.fnranked.ranked.data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import java.util.List;
 
 @Entity
 public class User {
@@ -25,9 +23,6 @@ public class User {
     public User(long discordID){
         this.discordID = discordID;
     }
-
-    @ManyToMany
-    List<Tournament> tournaments;
 
     public long getDiscordID() {
         return discordID;

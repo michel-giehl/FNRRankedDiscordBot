@@ -3,7 +3,7 @@ package com.fnranked.ranked.matchmaking;
 import com.fnranked.ranked.data.User;
 import com.fnranked.ranked.matchmaking.structures.Match;
 import com.fnranked.ranked.matchmaking.structures.Team;
-import com.fnranked.ranked.rest.FortnitePresence;
+import com.fnranked.ranked.data.FortnitePresence;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  * @author GiM
  * MatchTracking instance - used to automatically track match scores
  */
+@SuppressWarnings("all")
 public class MatchTracker {
 
     private static Logger logger = LoggerFactory.getLogger("MatchTracker");
@@ -53,7 +54,6 @@ public class MatchTracker {
         trackingInstances.add(this);
     }
 
-    @SuppressWarnings("all")
     public void onPresenceReceived(FortnitePresence presence) {
         User user = findUserByEpicAccountId(presence.getAccountId());
         if(!sessionIdsMatches(user)) {
@@ -74,6 +74,7 @@ public class MatchTracker {
                 //has to be available, otherwise isRoundFinished would be false.
                 var teamReceived = presenceReceivedOfTeam(presence).get();
                 updateScores(teamReceived);
+                //TODO check scores for winner
             }
         }
     }
