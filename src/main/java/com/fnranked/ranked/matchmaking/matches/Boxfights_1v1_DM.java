@@ -1,5 +1,7 @@
 package com.fnranked.ranked.matchmaking.matches;
 
+import com.fnranked.ranked.data.Region;
+import com.fnranked.ranked.matchmaking.MatchTracker;
 import com.fnranked.ranked.matchmaking.structures.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -8,14 +10,13 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 
 import java.awt.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class Boxfights implements Match {
+public class Boxfights_1v1_DM implements Match {
 
     private long id;
-    private String region;
+    private Region region;
     private String mapCode;
     private MatchType type;
     private Color color;
@@ -25,6 +26,11 @@ public class Boxfights implements Match {
 
     private Message voteMessage;
     private Collection<String> voteMessages;
+
+    private Map<Team, Team> winnerVotes;
+    private Collection<User> accepted;
+
+    private MatchState state;
 
     private Team a;
     private Team b;
@@ -37,23 +43,28 @@ public class Boxfights implements Match {
     }
 
     @Override
-    public String region() {
-        return null;
+    public Region region() {
+        return region;
     }
 
     @Override
     public String mapCode() {
-        return null;
+        return mapCode;
     }
 
     @Override
     public Color color() {
+        return color;
+    }
+
+    @Override
+    public MatchTracker matchTracker() {
         return null;
     }
 
     @Override
     public TextChannel matchChannel() {
-        return null;
+        return matchChannel;
     }
 
     @Override
@@ -63,42 +74,42 @@ public class Boxfights implements Match {
 
     @Override
     public Message voteMessage() {
-        return null;
+        return voteMessage;
     }
 
     @Override
     public Map<Team, Team> winnerSelected() {
-        return null;
+        return winnerVotes;
     }
 
     @Override
-    public List<User> acceptedTeams() {
-        return null;
+    public Collection<User> acceptedTeams() {
+        return accepted;
     }
 
     @Override
-    public List<String> voteMessages() {
-        return null;
+    public Collection<String> voteMessages() {
+        return voteMessages;
     }
 
     @Override
     public Team teamA() {
-        return null;
+        return a;
     }
 
     @Override
     public Team teamB() {
-        return null;
+        return b;
     }
 
     @Override
     public Optional<Team> winningTeam() {
-        return Optional.empty();
+        return Optional.ofNullable(winningTeam);
     }
 
     @Override
     public MatchMode mode() {
-        return MatchMode.GUILD_CHANNEL;
+        return MatchMode.PRIVATE_CHANNEL;
     }
 
     @Override
@@ -108,12 +119,12 @@ public class Boxfights implements Match {
 
     @Override
     public MatchState state() {
-        return null;
+        return state;
     }
 
     @Override
     public void setChannel(TextChannel matchChannel) {
-
+        this.matchChannel = matchChannel;
     }
 
     @Override
@@ -123,26 +134,28 @@ public class Boxfights implements Match {
 
     @Override
     public void setVoteMessage(Message voteMessage) {
+        this.voteMessage = voteMessage;
     }
 
     @Override
-    public void setWinner(Player winner) {
-
+    public void setWinner(Team winningTeam) {
+        this.winningTeam = winningTeam;
+        finish();
     }
 
     @Override
     public void setAccepted(User user) {
-
+        this.accepted.add(user);
     }
 
     @Override
     public void addVoteMessage(String messageID) {
-
+        this.voteMessages.add(messageID);
     }
 
     @Override
     public void setState(MatchState matchState) {
-
+        this.state = matchState;
     }
 
     @Override

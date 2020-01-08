@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FNRRegistration.iml" filepath="$PROJECT_DIR$/FNRRegistration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FNRBot.iml" filepath="$PROJECT_DIR$/FNRBot.iml" />
     </modules>
   </component>
 </project>

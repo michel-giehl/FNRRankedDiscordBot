@@ -7,15 +7,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class FnrRegistrationBoot {
+public class FnRankedBoot {
 
     public static void main(String[] args) {
-        SpringApplication.run(FnrRegistrationBoot.class, args);
-
+        SpringApplication.run(FnRankedBoot.class, args);
     }
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-        return args -> ctx.getBean(FnrRegistration.class).startBot();
+        return args -> ctx.getBean(FnRanked.class).startBot();
     }
 }

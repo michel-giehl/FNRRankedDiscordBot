@@ -1,5 +1,7 @@
 package com.fnranked.ranked.matchmaking.structures;
 
+import com.fnranked.ranked.data.Region;
+import com.fnranked.ranked.matchmaking.MatchTracker;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -14,9 +16,11 @@ import java.util.Optional;
 public interface Match {
 
     long id();
-    String region();
+    Region region();
     String mapCode();
     Color color();
+
+    MatchTracker matchTracker();
 
     TextChannel matchChannel();
     Optional<VoiceChannel> voiceChannel();
@@ -39,7 +43,7 @@ public interface Match {
 
     void setVoteMessage(Message voteMessage);
 
-    void setWinner(Player winner);
+    void setWinner(Team winningTeam);
 
     void setAccepted(User user);
 

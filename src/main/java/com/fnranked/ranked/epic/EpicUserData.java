@@ -1,4 +1,4 @@
-package com.fnranked.ranked.matchmaking.structures;
+package com.fnranked.ranked.epic;
 
 import org.springframework.data.annotation.Id;
 

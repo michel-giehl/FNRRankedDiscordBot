@@ -5,20 +5,19 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Component
-public class FnrRegistration {
+public class FnRanked {
 
     private static JDA jda;
-    private static Logger logger = LoggerFactory.getLogger(FnrRegistration.class);
+    private static Logger logger = Logger.getLogger("Test");
 
     @Value("${bot.token}")
     private String token;
@@ -70,6 +69,7 @@ public class FnrRegistration {
     }
 
     private void initTournamentChannel() {
+        return;/*
         logger.info("initialising registration channel");
         TextChannel registrationChannel = jda.getTextChannelById(tournamentChannelID);
         System.out.println(jda.getEmotesByName("fnranked", true).get(0).getId());
@@ -89,5 +89,5 @@ public class FnrRegistration {
         registrationChannel.sendMessage(embedBuilder.build()).complete();
         registrationChannel.addReactionById(registrationChannel.getLatestMessageIdLong(), "\uD83C\uDDE7").complete();
         logger.info("create-tournament channel initialized");
-    }
+    */}
 }
