@@ -1,4 +1,4 @@
-package com.fnranked.tournament.matchmaking.structures;
+package com.fnranked.ranked.matchmaking.structures;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -7,7 +7,7 @@ public interface Player {
 
     Member getMember();
 
-    String getEpicDisplayName();
+    EpicUserData getEpic();
 
     void setVoteMessage(Message voteMessage);
 

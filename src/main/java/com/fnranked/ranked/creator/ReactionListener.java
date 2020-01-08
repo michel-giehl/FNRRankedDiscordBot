@@ -1,7 +1,7 @@
-package com.fnranked.tournament.creator;
+package com.fnranked.ranked.creator;
 
-import com.fnranked.tournament.data.TournamentRepository;
-import com.fnranked.tournament.data.UserRepository;
+import com.fnranked.ranked.data.TournamentRepository;
+import com.fnranked.ranked.data.UserRepository;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.EventListener;

@@ -1,4 +1,4 @@
-package com.fnranked.tournament.data;
+package com.fnranked.ranked.data;
 
 public enum TournamentMode {
 

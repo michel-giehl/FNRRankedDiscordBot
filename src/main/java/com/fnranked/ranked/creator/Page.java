@@ -1,4 +1,4 @@
-package com.fnranked.tournament.creator;
+package com.fnranked.ranked.creator;
 
 public enum Page {
     MAIN_MENU,

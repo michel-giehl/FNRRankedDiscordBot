@@ -1,4 +1,4 @@
-package com.fnranked.tournament.matchmaking.structures;
+package com.fnranked.ranked.matchmaking.structures;
 
 public enum MatchState {
     AWAITING_MATCH_ACCEPT,

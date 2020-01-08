@@ -1,6 +1,6 @@
-package com.fnranked.tournament.creator;
+package com.fnranked.ranked.creator;
 
-import com.fnranked.tournament.data.Tournament;
+import com.fnranked.ranked.data.Tournament;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
