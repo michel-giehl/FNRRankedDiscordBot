@@ -10,6 +10,6 @@ public class FnRanked {
     private static Logger logger = Logger.getLogger("Test");
 
     public void startBot() {
-        logger.info("Initializing Registration Bot");
+        logger.info("Initializing Fortnite Ranked Match Service");
     }
 }

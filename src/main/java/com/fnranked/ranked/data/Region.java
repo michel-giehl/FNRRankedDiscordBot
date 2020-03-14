@@ -8,7 +8,9 @@ public enum  Region {
     ASIA("ASIA"),
     MIDDLE_EAST("ME");
 
-    Region(String region) {
+    private final String region;
 
+    Region(String region) {
+        this.region = region;
     }
 }

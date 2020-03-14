@@ -86,6 +86,11 @@
             <artifactId>guava</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>LATEST</version>
+        </dependency>
 
         <!-- Spring Dependencies-->
         <dependency>
