@@ -6,14 +6,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import java.util.List;
 
+/**
+ * Used to store temporary Match Data.
+ */
 @Entity
 public class MatchTemp {
 
     @Id
     long Id;
-
-    @OneToOne
-    RankedMatch rankedMatch;
 
     @OneToOne
     Team teamAVote;

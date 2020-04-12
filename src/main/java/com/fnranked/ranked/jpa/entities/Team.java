@@ -3,6 +3,11 @@ package com.fnranked.ranked.jpa.entities;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Teams are used by the Matchmaking system.
+ * Solo Players (1vs1 matches) are also represented by Team objects to have a uniform system
+ * and an easier way to implement 2v2/3v3 matches.
+ */
 @Entity
 public class Team {
 

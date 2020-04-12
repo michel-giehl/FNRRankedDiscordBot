@@ -1,11 +1,11 @@
 package com.fnranked.ranked.jpa.entities;
 
-import com.fnranked.ranked.data.MatchType;
+import com.fnranked.ranked.data.MatchStatus;
 import com.fnranked.ranked.data.Region;
-import com.fnranked.ranked.data.TeamSize;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.sql.Timestamp;
@@ -20,29 +20,28 @@ import java.time.Instant;
 public class RankedMatch {
 
     @Id
-    @GeneratedValue
     long Id;
+
+    long guildId;
 
     Timestamp startingTime;
 
     Timestamp endingTime;
 
-    boolean completed;
-
-    boolean cancelled;
-
-    boolean teamAWon;
+    MatchStatus status;
 
     @OneToOne
+    @NonNull
     Team teamA;
 
     @OneToOne
+    @NonNull
     Team teamB;
 
-    MatchType matchType;
+    @NonNull
+    String matchType;
 
-    TeamSize teamSize;
-
+    @Nullable
     Region region;
 
     public RankedMatch() {
@@ -51,21 +50,14 @@ public class RankedMatch {
     /**
      * Used to create a new Match
      *
-     * @param teamA team one
-     * @param teamB team two
-     * @param matchType type of the match
-     * @param teamSize the team size of the match, since all Matches are represented by Teams, not Players
      * @param region Where the match took place
      */
-    public RankedMatch(Team teamA, Team teamB, MatchType matchType, TeamSize teamSize, Region region) {
-        this.teamA = teamA;
-        this.teamB = teamB;
+    public RankedMatch(long matchId, Team winningTeam, Team losingTeam, Timestamp startingTime, Region region, String matchType) {
+        this.teamA = winningTeam;
+        this.teamB = losingTeam;
         this.matchType = matchType;
-        this.teamSize = teamSize;
         this.region = region;
-        this.startingTime = Timestamp.from(Instant.now());
-        this.completed = false;
-        this.cancelled = false;
+        this.endingTime = Timestamp.from(Instant.now());
     }
 
     public long getId() {
@@ -84,14 +76,6 @@ public class RankedMatch {
         return teamB;
     }
 
-    public MatchType getMatchType() {
-        return matchType;
-    }
-
-    public TeamSize getTeamSize() {
-        return teamSize;
-    }
-
     public Region getRegion() {
         return region;
     }
@@ -104,27 +88,43 @@ public class RankedMatch {
         this.endingTime = endingTime;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    public long getGuildId() {
+        return guildId;
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setGuildId(long guildId) {
+        this.guildId = guildId;
     }
 
-    public boolean isCancelled() {
-        return cancelled;
+    public void setStartingTime(Timestamp startingTime) {
+        this.startingTime = startingTime;
     }
 
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public MatchStatus getStatus() {
+        return status;
     }
 
-    public boolean isTeamAWon() {
-        return teamAWon;
+    public void setStatus(MatchStatus status) {
+        this.status = status;
     }
 
-    public void setTeamAWon(boolean teamAWon) {
-        this.teamAWon = teamAWon;
+    public void setTeamA(Team teamA) {
+        this.teamA = teamA;
+    }
+
+    public void setTeamB(Team teamB) {
+        this.teamB = teamB;
+    }
+
+    public String getMatchType() {
+        return matchType;
+    }
+
+    public void setMatchType(String matchType) {
+        this.matchType = matchType;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
     }
 }
