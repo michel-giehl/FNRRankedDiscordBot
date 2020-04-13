@@ -1,5 +1,7 @@
 package com.fnranked.ranked.jpa.entities;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -20,13 +22,14 @@ public class Team {
     int size;
 
     @OneToOne
+    @NonNull
     Player captain;
-
-    @ManyToMany
-    List<RankedMatch> rankedMatches;
 
     @OneToMany
     List<Player> playerList;
+
+    @ManyToMany
+    List<RankedMatch> rankedMatches;
 
     public Team() {
 

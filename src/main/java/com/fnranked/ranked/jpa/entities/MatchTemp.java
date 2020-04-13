@@ -1,9 +1,8 @@
 package com.fnranked.ranked.jpa.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -13,14 +12,39 @@ import java.util.List;
 public class MatchTemp {
 
     @Id
+    @GeneratedValue
     long Id;
+
+    long guildId;
+
+    Timestamp startingTime;
+
+    String matchType;
+
+    String region;
+
+    @OneToOne
+    Team teamA;
+
+    @OneToOne
+    Team teamB;
 
     @OneToOne
     Team teamAVote;
 
     @OneToOne
-    Team teamBVote;
+    Team TeamBVote;
 
-    @ManyToMany
+    long supportChannelId;
+
+    @OneToMany
     List<VoteMessage> voteMessages;
+
+    public MatchTemp() {
+    }
+
+    public MatchTemp(long guildId) {
+        this.guildId = guildId;
+        this.startingTime = Timestamp.from(Instant.now());
+    }
 }
