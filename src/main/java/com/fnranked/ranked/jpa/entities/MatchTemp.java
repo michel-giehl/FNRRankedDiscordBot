@@ -19,7 +19,8 @@ public class MatchTemp {
 
     Timestamp startingTime;
 
-    String matchType;
+    @OneToOne
+    MatchType matchType;
 
     String region;
 

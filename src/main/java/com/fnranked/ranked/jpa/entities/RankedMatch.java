@@ -48,8 +48,10 @@ public class RankedMatch {
     @NonNull
     double teamBEloChange;
 
-    @NonNull
-    String matchType;
+    double eloMultiplier;
+
+    @OneToOne
+    MatchType matchType;
 
     @Nullable
     Region region;
@@ -62,7 +64,7 @@ public class RankedMatch {
      *
      * @param region Where the match took place
      */
-    public RankedMatch(long matchId, Team teamA, Team teamB, Timestamp startingTime, Region region, String matchType) {
+    public RankedMatch(long matchId, Team teamA, Team teamB, Timestamp startingTime, Region region, MatchType matchType) {
         this.teamA = teamA;
         this.teamB = teamB;
         this.matchType = matchType;
@@ -153,11 +155,19 @@ public class RankedMatch {
         this.status = status;
     }
 
-    public String getMatchType() {
+    public double getEloMultiplier() {
+        return eloMultiplier;
+    }
+
+    public void setEloMultiplier(double eloMultiplier) {
+        this.eloMultiplier = eloMultiplier;
+    }
+
+    public MatchType getMatchType() {
         return matchType;
     }
 
-    public void setMatchType(String matchType) {
+    public void setMatchType(MatchType matchType) {
         this.matchType = matchType;
     }
 

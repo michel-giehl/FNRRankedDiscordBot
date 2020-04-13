@@ -31,6 +31,9 @@ public class Team {
     @ManyToMany
     List<RankedMatch> rankedMatches;
 
+    @OneToMany
+    List<Elo> eloList;
+
     public Team() {
 
     }

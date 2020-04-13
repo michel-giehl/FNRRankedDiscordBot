@@ -12,5 +12,8 @@ public class Elo {
     @OneToOne
     Team team;
 
+    @OneToOne
+    MatchType matchType;
+
     double eloRating;
 }

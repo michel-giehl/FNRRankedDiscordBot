@@ -1,9 +1,6 @@
 package com.fnranked.ranked.jpa.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -13,12 +10,12 @@ public class Queue {
     @GeneratedValue
     long Id;
 
-    String matchType;
+    @OneToOne
+    MatchType matchType;
 
     String region;
 
     boolean enabled;
-
 
     @OneToMany
     List<Team> queueing;

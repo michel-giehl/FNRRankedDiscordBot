@@ -4,7 +4,7 @@ import com.fnranked.ranked.data.MatchType;
 import com.fnranked.ranked.data.Region;
 import com.fnranked.ranked.data.TeamSize;
 import com.fnranked.ranked.jpa.entities.RankedMatch;
-import com.fnranked.ranked.jpa.repo.MatchRepository;
+import com.fnranked.ranked.jpa.repo.RankedMatchRepository;
 import com.fnranked.ranked.jpa.repo.PlayerRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class MatchController {
     TeamRepository teamRepository;
 
     @Autowired
-    MatchRepository matchRepository;
+    RankedMatchRepository rankedMatchRepository;
 
     @PutMapping(path = "/match/start/{type}/{teamSize}")
     @Transactional
@@ -49,7 +49,7 @@ public class MatchController {
         var teamA = teamAOpt.get();
         var teamB = teamBOpt.get();
         var match = new RankedMatch(teamA, teamB, MatchType.valueOf(type), TeamSize.values()[teamSize-1], Region.valueOf(region));
-        matchRepository.save(match);
+        rankedMatchRepository.save(match);
         return Json.createObjectBuilder().add("status", 200)
                 .add("message", "OK")
                 .add("matchId", match.getId())
