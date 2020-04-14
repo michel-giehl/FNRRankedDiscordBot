@@ -45,6 +45,9 @@ public class MatchTemp {
     @OneToMany
     List<VoteMessage> voteMessages;
 
+    @OneToMany
+    List<MatchMessages> matchMessages;
+
     public MatchTemp() {
     }
 
@@ -151,5 +154,9 @@ public class MatchTemp {
 
     public void setVoteMessages(List<VoteMessage> voteMessages) {
         this.voteMessages = voteMessages;
+    }
+
+    public List<MatchMessages> getMatchMessages() {
+        return matchMessages;
     }
 }
