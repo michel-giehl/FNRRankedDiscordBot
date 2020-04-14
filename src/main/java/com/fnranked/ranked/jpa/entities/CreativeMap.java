@@ -14,4 +14,6 @@ public class CreativeMap {
     String mapCode;
 
     String description;
+
+    boolean aimAssistEnabled;
 }
