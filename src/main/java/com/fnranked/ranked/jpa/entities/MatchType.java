@@ -11,7 +11,7 @@ public class MatchType {
 
     @Id
     @GeneratedValue
-    long Id;
+    long id;
 
     int teamSize;
 
@@ -21,4 +21,12 @@ public class MatchType {
 
     @OneToMany
     List<CreativeMap> mapPool;
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -42,4 +42,12 @@ public class Team {
         this.captain = captain;
         this.size = teamSize;
     }
+
+    public long getId() {
+        return Id;
+    }
+
+    public List<Elo> getEloList() {
+        return eloList;
+    }
 }
