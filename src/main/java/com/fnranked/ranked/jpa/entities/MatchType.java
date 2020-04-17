@@ -19,6 +19,8 @@ public class MatchType {
 
     String season;
 
+    long displayEmoteId;
+
     @OneToMany
     List<CreativeMap> mapPool;
 
@@ -28,5 +30,9 @@ public class MatchType {
 
     public String getName() {
         return name;
+    }
+
+    public long getDisplayEmoteId() {
+        return displayEmoteId;
     }
 }

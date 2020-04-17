@@ -23,6 +23,8 @@ public class Queue {
 
     String inputMethod;
 
+    String estimatedQueueTime;
+
     @OneToMany
     List<QueuedTeam> queueing;
 
@@ -87,5 +89,13 @@ public class Queue {
 
     public void setQueueMessages(List<QueueMessage> queueMessages) {
         this.queueMessages = queueMessages;
+    }
+
+    public String getEstimatedQueueTime() {
+        return estimatedQueueTime;
+    }
+
+    public void setEstimatedQueueTime(String estimatedQueueTime) {
+        this.estimatedQueueTime = estimatedQueueTime;
     }
 }
