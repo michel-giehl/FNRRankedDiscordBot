@@ -15,6 +15,8 @@ public class MatchType {
 
     int teamSize;
 
+    int requiredRoundsToWin;
+
     String name;
 
     String season;
@@ -34,5 +36,41 @@ public class MatchType {
 
     public long getDisplayEmoteId() {
         return displayEmoteId;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getTeamSize() {
+        return teamSize;
+    }
+
+    public void setTeamSize(int teamSize) {
+        this.teamSize = teamSize;
+    }
+
+    public int getRequiredRoundsToWin() {
+        return requiredRoundsToWin;
+    }
+
+    public void setRequiredRoundsToWin(int requiredRoundsToWin) {
+        this.requiredRoundsToWin = requiredRoundsToWin;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+    public void setDisplayEmoteId(long displayEmoteId) {
+        this.displayEmoteId = displayEmoteId;
     }
 }

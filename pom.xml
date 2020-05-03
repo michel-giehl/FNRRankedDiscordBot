@@ -54,7 +54,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.1.1_101</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>cn.kanejin.exts</groupId>

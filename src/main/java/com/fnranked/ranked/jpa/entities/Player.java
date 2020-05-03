@@ -26,4 +26,36 @@ public class Player {
     public Player(long Id) {
         this.Id = Id;
     }
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public double getEloMultiplier() {
+        return eloMultiplier;
+    }
+
+    public void setEloMultiplier(double eloMultiplier) {
+        this.eloMultiplier = eloMultiplier;
+    }
+
+    public Timestamp getMultiplierActiveUntil() {
+        return multiplierActiveUntil;
+    }
+
+    public void setMultiplierActiveUntil(Timestamp multiplierActiveUntil) {
+        this.multiplierActiveUntil = multiplierActiveUntil;
+    }
+
+    public List<Team> getTeamList() {
+        return teamList;
+    }
+
+    public void setTeamList(List<Team> teamList) {
+        this.teamList = teamList;
+    }
 }

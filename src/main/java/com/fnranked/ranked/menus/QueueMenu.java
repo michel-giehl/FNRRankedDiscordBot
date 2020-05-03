@@ -63,7 +63,6 @@ public class QueueMenu implements Menu {
 
     @Override
     public MessageEmbed getEmbed(User user) {
-        //TODO get region from user's current preference
         return getEmbed(Region.NA_EAST);
     }
 

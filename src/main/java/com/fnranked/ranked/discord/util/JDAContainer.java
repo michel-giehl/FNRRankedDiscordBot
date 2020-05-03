@@ -1,7 +1,6 @@
 package com.fnranked.ranked.discord.util;
 
 import net.dv8tion.jda.api.JDA;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -22,4 +22,36 @@ public class MatchMessages {
     @OneToOne
     MatchTemp matchTemp;
 
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public MatchTemp getMatchTemp() {
+        return matchTemp;
+    }
+
+    public void setMatchTemp(MatchTemp matchTemp) {
+        this.matchTemp = matchTemp;
+    }
 }

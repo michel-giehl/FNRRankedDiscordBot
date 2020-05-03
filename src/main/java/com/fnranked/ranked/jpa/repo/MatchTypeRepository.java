@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface MatchTypeRepository extends CrudRepository<MatchType, Long> {
     Optional<MatchType> findById(long Id);
+
 }

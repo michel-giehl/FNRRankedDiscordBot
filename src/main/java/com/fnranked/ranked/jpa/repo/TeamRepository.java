@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface TeamRepository extends CrudRepository<Team, Long> {
     Optional<Team> findByCaptainAndSizeAndActiveIsTrue(Player captain, int teamSize);
+    Iterable<Team> findAllByPlayerListContaining(Player player);
 }

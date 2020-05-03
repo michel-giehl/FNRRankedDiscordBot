@@ -1,5 +1,8 @@
 package com.fnranked.ranked.jpa.entities;
 
+import com.fnranked.ranked.data.MatchVote;
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -22,6 +25,9 @@ public class MatchTemp {
     @OneToOne
     MatchType matchType;
 
+    @OneToOne
+    CreativeMap map;
+
     String region;
 
     @OneToOne
@@ -30,17 +36,20 @@ public class MatchTemp {
     @OneToOne
     Team teamB;
 
-    @OneToOne
-    Team teamAVote;
+    MatchVote teamAVote;
 
-    @OneToOne
-    Team TeamBVote;
+    MatchVote TeamBVote;
 
     boolean teamAAccepted;
 
     boolean teamBAccepted;
 
+    long matchChannelId;
+
     long supportChannelId;
+
+    @OneToOne
+    MatchServer matchServer;
 
     @OneToMany
     List<VoteMessage> voteMessages;
@@ -56,8 +65,32 @@ public class MatchTemp {
         this.startingTime = Timestamp.from(Instant.now());
     }
 
+    public CreativeMap getMap() {
+        return map;
+    }
+
+    public void setMap(CreativeMap map) {
+        this.map = map;
+    }
+
+    public MatchServer getMatchServer() {
+        return matchServer;
+    }
+
+    public void setMatchServer(MatchServer matchServer) {
+        this.matchServer = matchServer;
+    }
+
     public long getId() {
         return Id;
+    }
+
+    public long getMatchChannelId() {
+        return matchChannelId;
+    }
+
+    public void setMatchChannelId(long matchChannelId) {
+        this.matchChannelId = matchChannelId;
     }
 
     public long getGuildId() {
@@ -108,20 +141,24 @@ public class MatchTemp {
         this.teamB = teamB;
     }
 
-    public Team getTeamAVote() {
+    public MatchVote getTeamAVote() {
         return teamAVote;
     }
 
-    public void setTeamAVote(Team teamAVote) {
+    public void setTeamAVote(MatchVote teamAVote) {
         this.teamAVote = teamAVote;
     }
 
-    public Team getTeamBVote() {
+    public MatchVote getTeamBVote() {
         return TeamBVote;
     }
 
-    public void setTeamBVote(Team teamBVote) {
+    public void setTeamBVote(MatchVote teamBVote) {
         TeamBVote = teamBVote;
+    }
+
+    public void setMatchMessages(List<MatchMessages> matchMessages) {
+        this.matchMessages = matchMessages;
     }
 
     public boolean isTeamAAccepted() {
