@@ -20,11 +20,6 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <name>JitPack</name>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
             <id>jcenter</id>
             <name>JCenter</name>
             <url>https://jcenter.bintray.com</url>
@@ -32,6 +27,11 @@
         <repository>
             <id>jcenter-snapshot</id>
             <url>https://oss.jfrog.org/artifactory/libs-release/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <name>JitPack</name>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 

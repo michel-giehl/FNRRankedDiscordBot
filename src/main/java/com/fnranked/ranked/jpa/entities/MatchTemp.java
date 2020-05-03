@@ -51,8 +51,7 @@ public class MatchTemp {
     @OneToOne
     MatchServer matchServer;
 
-    @OneToMany
-    List<VoteMessage> voteMessages;
+    long voteMessageId;
 
     @OneToMany
     List<MatchMessages> matchMessages;
@@ -185,12 +184,12 @@ public class MatchTemp {
         this.supportChannelId = supportChannelId;
     }
 
-    public List<VoteMessage> getVoteMessages() {
-        return voteMessages;
+    public long getVoteMessageId() {
+        return voteMessageId;
     }
 
-    public void setVoteMessages(List<VoteMessage> voteMessages) {
-        this.voteMessages = voteMessages;
+    public void setVoteMessageId(long voteMessageId) {
+        this.voteMessageId = voteMessageId;
     }
 
     public List<MatchMessages> getMatchMessages() {

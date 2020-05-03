@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.awt.*;
 
 @Component
-public class MatchMessages {
+public class MessageUtils {
 
     @Autowired
     JDAContainer jdaContainer;
