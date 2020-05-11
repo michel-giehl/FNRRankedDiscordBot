@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Bean;
 public class FnRankedBoot {
 
     public static void main(String[] args) {
-        SpringApplication.run(FnRankedBoot.class, args);
+        SpringApplication.run(FnRanked.class, args);
     }
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-        return args -> ctx.getBean(FnRanked.class).startBot();
+        return args -> ctx.getBean(FnRanked.class).initDiscordSession();
     }
 }

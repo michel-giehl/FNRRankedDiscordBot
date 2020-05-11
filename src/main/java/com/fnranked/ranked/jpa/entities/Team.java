@@ -42,6 +42,7 @@ public class Team {
     public Team(Player captain, int teamSize) {
         this.captain = captain;
         this.size = teamSize;
+        this.active = true;
     }
 
     public long getId() {

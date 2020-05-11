@@ -1,10 +1,17 @@
 package com.fnranked.ranked;
 
+import com.fnranked.ranked.discord.commands.AddMatchTypeCommand;
+import com.fnranked.ranked.discord.commands.AddQueueCommand;
+import com.fnranked.ranked.discord.commands.SendQueueMessageCommand;
+import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerBuilder;
+import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerListener;
+import com.fnranked.ranked.discord.commands.commandhandler.command.CommandBuilder;
 import com.fnranked.ranked.discord.util.JDAContainer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,34 +27,40 @@ public class FnRanked {
 
     private static Logger logger = LoggerFactory.getLogger(FnRanked.class);
 
-    @Value("${fnranked.token}")
-    String token;
-
     @Autowired
     JDAContainer jdaContainer;
 
     @Autowired
-    List<EventListener> eventListeners;
+    AddMatchTypeCommand addMatchTypeCommand;
+    @Autowired
+    AddQueueCommand addQueueCommand;
+    @Autowired
+    SendQueueMessageCommand sendQueueMessageCommand;
+    @Autowired
+    CommandHandlerListener commandHandlerListener;
 
-    public void startBot() {
-        logger.info("Initializing FN Ranked Bot");
+    @Value("${bot.token}")
+    String token;
+
+    public void initDiscordSession() {
         JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
         jdaBuilder.setToken(token);
         jdaBuilder.setAutoReconnect(true);
         jdaBuilder.setStatus(OnlineStatus.ONLINE);
-        JDA jda;
+        jdaBuilder.setActivity(Activity.watching("Netflix"));
+        logger.info("Starting discord session");
         try {
-            jda = jdaBuilder.build();
+            JDA jda = jdaBuilder.build();
             logger.info("Discord login successful.");
-            for (EventListener eventListener : eventListeners) {
-                jda.addEventListener(eventListener);
-            }
-            jda.awaitReady();
             jdaContainer.setJda(jda);
-            logger.info("FN Ranked Bot Initialised");
-        } catch (LoginException | InterruptedException e1) {
-            logger.error(e1.toString());
+            jda.addEventListener(commandHandlerListener);
+            new CommandHandlerBuilder(jda).setPrefix("!")
+                    .addCommand(new CommandBuilder("addmatchtype", addMatchTypeCommand).build())
+                    .addCommand(new CommandBuilder("addqueue", addQueueCommand).build())
+                    .addCommand(new CommandBuilder("sendqueuemessage", sendQueueMessageCommand).build())
+                    .build();
+        } catch (LoginException e1) {
+            e1.printStackTrace();
         }
-
     }
 }

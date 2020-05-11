@@ -102,7 +102,6 @@ public class Matchmaking {
         } else if (timeInQueue < 120000) {
             return 275;
         } else return 400;
-
     }
 
     private double getEloRatingForMatchType(MatchType matchType, QueuedTeam queuedTeam) {

@@ -1,5 +1,11 @@
-package com.fnranked.ranked.discord;
+package com.fnranked.ranked;
 
+import com.fnranked.ranked.discord.commands.AddMatchTypeCommand;
+import com.fnranked.ranked.discord.commands.AddQueueCommand;
+import com.fnranked.ranked.discord.commands.SendQueueMessageCommand;
+import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerBuilder;
+import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerListener;
+import com.fnranked.ranked.discord.commands.commandhandler.command.CommandBuilder;
 import com.fnranked.ranked.discord.util.JDAContainer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
@@ -18,16 +24,23 @@ import javax.security.auth.login.LoginException;
 public class DiscordBoot {
 
     private static Logger logger = LoggerFactory.getLogger(DiscordBoot.class);
-    private JDA jda;
-
 
     @Autowired
     JDAContainer jdaContainer;
 
+    @Autowired
+    AddMatchTypeCommand addMatchTypeCommand;
+    @Autowired
+    AddQueueCommand addQueueCommand;
+    @Autowired
+    SendQueueMessageCommand sendQueueMessageCommand;
+    @Autowired
+    CommandHandlerListener commandHandlerListener;
+
     @Value("${bot.token}")
     String token;
 
-    private void initDiscordSession() {
+    public void initDiscordSession() {
         JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
         jdaBuilder.setToken(token);
         jdaBuilder.setAutoReconnect(true);
@@ -35,9 +48,15 @@ public class DiscordBoot {
         jdaBuilder.setActivity(Activity.watching("Netflix"));
         logger.info("Starting discord session");
         try {
-            jda = jdaBuilder.build();
+            JDA jda = jdaBuilder.build();
             logger.info("Discord login successful.");
             jdaContainer.setJda(jda);
+            jda.addEventListener(commandHandlerListener);
+            new CommandHandlerBuilder(jda).setPrefix("!")
+                    .addCommand(new CommandBuilder("addmatchtype", addMatchTypeCommand).build())
+                    .addCommand(new CommandBuilder("addqueue", addQueueCommand).build())
+                    .addCommand(new CommandBuilder("sendqueuemessage", sendQueueMessageCommand).build())
+                .build();
         } catch (LoginException e1) {
             e1.printStackTrace();
         }

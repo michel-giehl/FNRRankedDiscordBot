@@ -49,7 +49,7 @@ public class QueueMenu implements Menu {
         }
         StringBuilder menuTextBuilder = new StringBuilder(String.format("Available Queues in %s Region: %n", region.name()));
         for (Queue queue : queueList) {
-            menuTextBuilder.append(String.format(":%s: ", queue.getMatchType().getDisplayEmoteId()));
+            menuTextBuilder.append(String.format(":%s: ", queue.getMatchType().getDisplayEmote()));
             menuTextBuilder.append(queue.getMatchType().getName());
             menuTextBuilder.append(String.format(" (%d in queue, %s estimated queue time)", queue.getQueueing().size(), queue.getEstimatedQueueTime()));
         }
@@ -79,7 +79,7 @@ public class QueueMenu implements Menu {
         Collection<Emote> emotes = new ArrayList<>();
         for (Queue queue : queueList) {
 
-            emotes.add(new EmoteImpl(queue.getMatchType().getDisplayEmoteId(), (JDAImpl) jdaContainer.getJda()));
+           // emotes.add(new EmoteImpl(queue.getMatchType().getDisplayEmote(), (JDAImpl) jdaContainer.getJda()));
 
         }
         return emotes;

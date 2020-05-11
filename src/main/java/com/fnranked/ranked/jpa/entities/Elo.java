@@ -14,9 +14,6 @@ public class Elo {
     long Id;
 
     @OneToOne
-    Team team;
-
-    @OneToOne
     MatchType matchType;
 
     @NotNull
@@ -28,5 +25,12 @@ public class Elo {
 
     public double getEloRating() {
         return eloRating;
+    }
+
+    public Elo(){}
+
+    public Elo(MatchType matchType, double eloRating) {
+        this.matchType = matchType;
+        this.eloRating = eloRating;
     }
 }

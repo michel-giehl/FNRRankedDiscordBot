@@ -15,4 +15,6 @@ public interface QueueRepository extends CrudRepository<Queue, Long> {
     Iterable<Queue> findAll();
 
     List<Queue> findAllByRegionIs(Region region);
+
+    List<Queue> findAllWhereEnabledIsTrue();
 }

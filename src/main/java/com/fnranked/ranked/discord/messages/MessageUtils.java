@@ -25,6 +25,13 @@ public class MessageUtils {
     @Value("${emote.success}")
     long successEmoteId;
 
+    public MessageEmbed getMatchAcceptEmbed(MatchTemp matchTemp) {
+        EmbedBuilder acceptEmbed = new EmbedBuilder();
+        acceptEmbed.setTitle("Match ready");
+        acceptEmbed.setDescription(String.format("A match has been found for you.\n```py\nYour elo: %d\nOpponents elo: %d``` Click :white_check_mark: to accept the match.", 0, 0));
+        return acceptEmbed.build();
+    }
+
     public MessageEmbed getMatchInformationEmbed(MatchTemp matchTemp) {
         EmbedBuilder embed = new EmbedBuilder();
         //ex EU Boxfight 1v1 Match

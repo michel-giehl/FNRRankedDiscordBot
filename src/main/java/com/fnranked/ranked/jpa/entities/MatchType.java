@@ -19,9 +19,9 @@ public class MatchType {
 
     String name;
 
-    String season;
+    int season;
 
-    long displayEmoteId;
+    String displayEmote;
 
     @OneToMany
     List<CreativeMap> mapPool;
@@ -34,8 +34,20 @@ public class MatchType {
         return name;
     }
 
-    public long getDisplayEmoteId() {
-        return displayEmoteId;
+    public String getDisplayEmote() {
+        return displayEmote;
+    }
+
+    public void setDisplayEmote(String displayEmote) {
+        this.displayEmote = displayEmote;
+    }
+
+    public List<CreativeMap> getMapPool() {
+        return mapPool;
+    }
+
+    public void setMapPool(List<CreativeMap> mapPool) {
+        this.mapPool = mapPool;
     }
 
     public void setId(long id) {
@@ -62,15 +74,11 @@ public class MatchType {
         this.name = name;
     }
 
-    public String getSeason() {
+    public int getSeason() {
         return season;
     }
 
-    public void setSeason(String season) {
+    public void setSeason(int season) {
         this.season = season;
-    }
-
-    public void setDisplayEmoteId(long displayEmoteId) {
-        this.displayEmoteId = displayEmoteId;
     }
 }
