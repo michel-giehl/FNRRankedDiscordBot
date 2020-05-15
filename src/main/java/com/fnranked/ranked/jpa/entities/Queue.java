@@ -12,7 +12,7 @@ public class Queue {
     @GeneratedValue
     long Id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     MatchType matchType;
 
     Region region;
@@ -25,11 +25,8 @@ public class Queue {
 
     String estimatedQueueTime;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<QueuedTeam> queueing;
-
-    @OneToMany
-    List<QueueMessage> queueMessages;
 
     public long getId() {
         return Id;
@@ -81,14 +78,6 @@ public class Queue {
 
     public void setQueueing(List<QueuedTeam> queueing) {
         this.queueing = queueing;
-    }
-
-    public List<QueueMessage> getQueueMessages() {
-        return queueMessages;
-    }
-
-    public void setQueueMessages(List<QueueMessage> queueMessages) {
-        this.queueMessages = queueMessages;
     }
 
     public String getEstimatedQueueTime() {

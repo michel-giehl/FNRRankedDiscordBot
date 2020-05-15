@@ -28,8 +28,8 @@ public class AddMatchTypeCommand implements CommandListener {
             int teamSize = Integer.parseInt(args[0]);
             int requiredRoundsToWin = Integer.parseInt(args[1]);
             int season = Integer.parseInt(args[2]);
-            String name = args[3];
-            String emote = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
+            String emote = args[3];
+            String name = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
             MatchType matchType = new MatchType();
             matchType.setDisplayEmote(emote);
             matchType.setName(name);

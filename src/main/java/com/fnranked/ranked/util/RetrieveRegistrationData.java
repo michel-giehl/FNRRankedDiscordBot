@@ -7,17 +7,17 @@ import java.io.IOException;
 
 
 @Component
-public class GetUser {
+public class RetrieveRegistrationData {
 
     private OkHttpClient client;
 
     private static String BASE_URL = "127.0.0.1:8091/user/";
 
-    public GetUser() {
+    public RetrieveRegistrationData() {
         client = new OkHttpClient();
     }
 
-    public void getUser(String userId) {
+    public void get(String userId, Result<String> result) {
         Request req = new Request.Builder().get().url(BASE_URL + userId).build();
         client.newCall(req).enqueue(new Callback() {
             @Override
@@ -27,6 +27,11 @@ public class GetUser {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if(response.body() != null) {
+                    String res = response.body().string();
+                    result.invoke(res);
+                }
+                response.close();
             }
         });
     }

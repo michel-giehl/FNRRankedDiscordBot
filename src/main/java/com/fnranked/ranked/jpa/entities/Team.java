@@ -25,14 +25,13 @@ public class Team {
     @NonNull
     Player captain;
 
-    //TODO fix this.
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<Player> playerList;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     List<RankedMatch> rankedMatches;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<Elo> eloList;
 
     public Team() {

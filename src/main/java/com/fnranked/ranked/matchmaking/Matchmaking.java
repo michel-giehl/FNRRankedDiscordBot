@@ -6,6 +6,7 @@ import com.fnranked.ranked.jpa.entities.Queue;
 import com.fnranked.ranked.jpa.entities.QueuedTeam;
 import com.fnranked.ranked.jpa.repo.PlayerRepository;
 import com.fnranked.ranked.jpa.repo.QueueRepository;
+import com.fnranked.ranked.jpa.repo.QueuedTeamRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.sql.Time;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,6 +37,10 @@ public class Matchmaking {
     TeamRepository teamRepository;
     @Autowired
     QueueChanger queueChanger;
+    @Autowired
+    MatchCreator matchCreator;
+    @Autowired
+    QueuedTeamRepository queuedTeamRepository;
 
     @Scheduled(initialDelay = 15_000L, fixedRate = 5000L)
     public void findMatchesFromQueues() {
@@ -59,7 +65,9 @@ public class Matchmaking {
                         }
                         notToMatch.add(teamA);
                         notToMatch.add(teamB);
+                        System.out.println("MATCH FOUND");
                         //TODO create match and do stuff.
+                        matchCreator.createMatch(queue.getMatchType(), queue.getRegion(), teamA.getTeam(), teamB.getTeam());
                     }
                 }
             }
@@ -71,9 +79,9 @@ public class Matchmaking {
      * Returns true if teamA and teamB can match based on their elo difference
      */
     private boolean canMatch(Queue queue, QueuedTeam teamA, QueuedTeam teamB) {
-        Time time = Time.valueOf(LocalTime.now());
-        long timeInQueueA = time.getTime() - teamA.getTimeJoined().getTime();
-        long timeInQueueB = time.getTime() - teamB.getTimeJoined().getTime();
+        long now = Instant.now().toEpochMilli();
+        long timeInQueueA = now - teamA.getTimeJoined().toInstant().toEpochMilli();
+        long timeInQueueB = now - teamB.getTimeJoined().toInstant().toEpochMilli();
         double eloRange = getEloRange(Math.min(timeInQueueA, timeInQueueB));
         double teamAElo = getEloRatingForMatchType(queue.getMatchType(), teamA);
         double teamBElo = getEloRatingForMatchType(queue.getMatchType(), teamB);
@@ -105,7 +113,8 @@ public class Matchmaking {
     }
 
     private double getEloRatingForMatchType(MatchType matchType, QueuedTeam queuedTeam) {
-        for (Elo elo : queuedTeam.getTeam().getEloList()) {
+        var team = teamRepository.findTeamByIdWithEloList(queuedTeam.getTeam().getId());
+        for (Elo elo : team.get().getEloList()) {
             if (elo.getMatchType().equals(matchType)) {
                 return elo.getEloRating();
             }

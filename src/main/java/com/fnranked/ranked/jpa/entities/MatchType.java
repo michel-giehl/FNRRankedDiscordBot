@@ -81,4 +81,9 @@ public class MatchType {
     public void setSeason(int season) {
         this.season = season;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.id == ((MatchType)obj).getId();
+    }
 }

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 public class FnRankedBoot {
 
     public static void main(String[] args) {
-        SpringApplication.run(FnRanked.class, args);
+        SpringApplication.run(FnRankedBoot.class, args);
     }
 
     @Bean

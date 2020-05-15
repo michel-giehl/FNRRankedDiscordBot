@@ -3,9 +3,14 @@ package com.fnranked.ranked;
 import com.fnranked.ranked.discord.commands.AddMatchTypeCommand;
 import com.fnranked.ranked.discord.commands.AddQueueCommand;
 import com.fnranked.ranked.discord.commands.SendQueueMessageCommand;
+import com.fnranked.ranked.discord.commands.WinnerCommand;
 import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerBuilder;
 import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerListener;
 import com.fnranked.ranked.discord.commands.commandhandler.command.CommandBuilder;
+import com.fnranked.ranked.discord.listener.GuildMemberJoinListener;
+import com.fnranked.ranked.discord.listener.MatchAcceptListener;
+import com.fnranked.ranked.discord.listener.MatchVoteListener;
+import com.fnranked.ranked.discord.listener.QueueListener;
 import com.fnranked.ranked.discord.util.JDAContainer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
@@ -38,6 +43,18 @@ public class FnRanked {
     SendQueueMessageCommand sendQueueMessageCommand;
     @Autowired
     CommandHandlerListener commandHandlerListener;
+    @Autowired
+    WinnerCommand winnerCommand;
+
+    @Autowired
+    QueueListener queueListener;
+    @Autowired
+    GuildMemberJoinListener guildMemberJoinListener;
+    @Autowired
+    MatchAcceptListener matchAcceptListener;
+    @Autowired
+    MatchVoteListener matchVoteListener;
+
 
     @Value("${bot.token}")
     String token;
@@ -54,11 +71,17 @@ public class FnRanked {
             logger.info("Discord login successful.");
             jdaContainer.setJda(jda);
             jda.addEventListener(commandHandlerListener);
+            jda.addEventListener(queueListener);
+            jda.addEventListener(guildMemberJoinListener);
+            jda.addEventListener(matchAcceptListener);
+            jda.addEventListener(matchVoteListener);
+
+            commandHandlerListener.init(
             new CommandHandlerBuilder(jda).setPrefix("!")
                     .addCommand(new CommandBuilder("addmatchtype", addMatchTypeCommand).build())
                     .addCommand(new CommandBuilder("addqueue", addQueueCommand).build())
-                    .addCommand(new CommandBuilder("sendqueuemessage", sendQueueMessageCommand).build())
-                    .build();
+                    .addCommand(new CommandBuilder("winner", winnerCommand).build())
+                    .addCommand(new CommandBuilder("sendqueuemessage", sendQueueMessageCommand).build()));
         } catch (LoginException e1) {
             e1.printStackTrace();
         }

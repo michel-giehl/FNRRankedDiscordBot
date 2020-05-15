@@ -1,9 +1,10 @@
 package com.fnranked.ranked.jpa.entities;
 
-import javax.persistence.Column;
+import net.dv8tion.jda.api.entities.Message;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 @Entity
 public class MatchMessages {
@@ -11,17 +12,40 @@ public class MatchMessages {
     /**
      * message Id used as ID
      */
+
     @Id
+    @GeneratedValue
     long Id;
 
-    long authorId;
+    long messageId;
 
-    @Column(columnDefinition = "VARCHAR(2000)")
-    String content;
+    long channelId;
 
-    @OneToOne
-    MatchTemp matchTemp;
+    public MatchMessages() {
 
+    }
+
+    public MatchMessages(Message message) {
+        System.out.println("NEW MATCH MESsAGTE");
+        this.messageId = message.getIdLong();
+        this.channelId = message.getChannel().getIdLong();
+    }
+
+    public long getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(long messageId) {
+        this.messageId = messageId;
+    }
+
+    public long getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(long channelId) {
+        this.channelId = channelId;
+    }
 
     public long getId() {
         return Id;
@@ -29,29 +53,5 @@ public class MatchMessages {
 
     public void setId(long id) {
         Id = id;
-    }
-
-    public long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(long authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public MatchTemp getMatchTemp() {
-        return matchTemp;
-    }
-
-    public void setMatchTemp(MatchTemp matchTemp) {
-        this.matchTemp = matchTemp;
     }
 }

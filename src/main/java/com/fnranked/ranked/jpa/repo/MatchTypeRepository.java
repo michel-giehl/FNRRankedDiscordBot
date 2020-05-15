@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface MatchTypeRepository extends CrudRepository<MatchType, Long> {
     Optional<MatchType> findById(long Id);
     Optional<MatchType> findByName(String a);
+    Optional<MatchType> findByDisplayEmote(String emote);
+    Optional<MatchType> findFirstByDisplayEmote(String emote);
 }

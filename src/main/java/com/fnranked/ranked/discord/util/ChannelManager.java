@@ -2,7 +2,6 @@ package com.fnranked.ranked.discord.util;
 
 import com.fnranked.ranked.discord.messages.MessageUtils;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
-import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import net.dv8tion.jda.api.Permission;
@@ -42,14 +41,18 @@ public class ChannelManager {
     @Transactional
     //to ignore "result ignored"
     @SuppressWarnings("all")
-    public void createMatchChannel(MatchTemp tempMatch, List<Team> teamsInMatch) {
-        var guildOpt = loadBalancer.getBestGuild();
-        if(guildOpt.isEmpty()) {
-            logger.trace("Unable to create match channel for " + tempMatch.toString() + " due to the JDA Guild with id #" + tempMatch.getGuildId() + " being null");
+    public void createMatchChannel(MatchTemp tempMatch) {
+        System.out.println("creating channel");
+        var matchServerOpt = loadBalancer.getBestMatchServer();
+        if(matchServerOpt.getFirst() == null) {
+            logger.warn("Unable to create match channel for " + tempMatch.toString() + " due to the JDA Guild with id #" + tempMatch.getGuildId() + " being null");
             return;
         }
-        Guild guild = guildOpt.get();
-        var channelAction = guild.createTextChannel("match-" + tempMatch.getId());
+        Guild guild = matchServerOpt.getFirst();
+        tempMatch.setMatchServer(matchServerOpt.getSecond());
+        System.out.println("GUILD: " + guild.getIdLong() + " | name: " + guild.getName());
+        String matchId = (tempMatch.getStartingTime().toInstant().toEpochMilli()+"");
+        var channelAction = guild.createTextChannel("match-" + matchId.substring(matchId.length()-4));
         var members = memberUtils.getAllMembersInTempMatch(tempMatch);
         for(Member member : members) {
             channelAction.addPermissionOverride(member, List.of(Permission.VIEW_CHANNEL), null);
@@ -61,9 +64,11 @@ public class ChannelManager {
                     tempMatch.setMatchChannelId(tc.getIdLong());
                     tempMatch.setVoteMessageId(voteMessage.getIdLong());
                     matchTempRepository.save(tempMatch);
+                    voteMessage.addReaction("\uD83C\uDFC6").queue();
+                    voteMessage.addReaction("☠️").queue();
+                    voteMessage.addReaction("\uD83C\uDFF3️").queue();
                 });
             });
-
         });
     }
 

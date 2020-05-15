@@ -3,6 +3,7 @@ package com.fnranked.ranked.jpa.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class CreativeMap {
@@ -10,6 +11,9 @@ public class CreativeMap {
     @Id
     @GeneratedValue
     long Id;
+
+    @OneToOne
+    MatchType matchType;
 
     String mapCode;
 

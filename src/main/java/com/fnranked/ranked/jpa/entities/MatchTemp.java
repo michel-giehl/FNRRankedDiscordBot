@@ -1,12 +1,15 @@
 package com.fnranked.ranked.jpa.entities;
 
 import com.fnranked.ranked.data.MatchVote;
-import org.hibernate.annotations.ColumnDefault;
+import com.fnranked.ranked.data.Region;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Used to store temporary Match Data.
@@ -28,7 +31,7 @@ public class MatchTemp {
     @OneToOne
     CreativeMap map;
 
-    String region;
+    Region region;
 
     @OneToOne
     Team teamA;
@@ -38,7 +41,7 @@ public class MatchTemp {
 
     MatchVote teamAVote;
 
-    MatchVote TeamBVote;
+    MatchVote teamBVote;
 
     boolean teamAAccepted;
 
@@ -53,15 +56,27 @@ public class MatchTemp {
 
     long voteMessageId;
 
-    @OneToMany
-    List<MatchMessages> matchMessages;
+    @OneToMany(cascade = CascadeType.ALL)
+    List<MatchMessages> matchAcceptMessages;
 
     public MatchTemp() {
     }
 
+    public MatchTemp(MatchType matchType, CreativeMap creativeMap, Team teamA, Team teamB) {
+        this.matchType = matchType;
+        this.teamA = teamA;
+        this.teamB = teamB;
+        this.teamAVote = MatchVote.PENDING;
+        this.teamBVote = MatchVote.PENDING;
+        this.teamAAccepted = false;
+        this.teamBAccepted = false;
+        this.map = creativeMap;
+        this.startingTime = Timestamp.from(Instant.now());
+        this.matchAcceptMessages = new ArrayList<>();
+    }
+
     public MatchTemp(long guildId) {
         this.guildId = guildId;
-        this.startingTime = Timestamp.from(Instant.now());
     }
 
     public CreativeMap getMap() {
@@ -116,11 +131,15 @@ public class MatchTemp {
         this.matchType = matchType;
     }
 
-    public String getRegion() {
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public Region getRegion() {
         return region;
     }
 
-    public void setRegion(String region) {
+    public void setRegion(Region region) {
         this.region = region;
     }
 
@@ -149,15 +168,15 @@ public class MatchTemp {
     }
 
     public MatchVote getTeamBVote() {
-        return TeamBVote;
+        return teamBVote;
     }
 
     public void setTeamBVote(MatchVote teamBVote) {
-        TeamBVote = teamBVote;
+        this.teamBVote = teamBVote;
     }
 
-    public void setMatchMessages(List<MatchMessages> matchMessages) {
-        this.matchMessages = matchMessages;
+    public void setMatchAcceptMessages(List<MatchMessages> matchMessages) {
+        this.matchAcceptMessages = matchMessages;
     }
 
     public boolean isTeamAAccepted() {
@@ -192,7 +211,7 @@ public class MatchTemp {
         this.voteMessageId = voteMessageId;
     }
 
-    public List<MatchMessages> getMatchMessages() {
-        return matchMessages;
+    public List<MatchMessages> getMatchAcceptMessages() {
+        return matchAcceptMessages;
     }
 }

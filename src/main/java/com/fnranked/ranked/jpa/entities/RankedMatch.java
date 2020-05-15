@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.sql.Timestamp;
@@ -62,14 +63,19 @@ public class RankedMatch {
     /**
      * Used to create a new Match
      *
-     * @param region Where the match took place
      */
-    public RankedMatch(long matchId, Team teamA, Team teamB, Timestamp startingTime, Region region, MatchType matchType) {
-        this.teamA = teamA;
-        this.teamB = teamB;
-        this.matchType = matchType;
-        this.region = region;
+    public RankedMatch(MatchTemp matchTemp, Team winner, MatchStatus status) {
+        this.Id = matchTemp.getId();
+        this.teamA = matchTemp.getTeamA();
+        this.teamB = matchTemp.getTeamB();
+        this.matchType = matchTemp.getMatchType();
+        this.region = matchTemp.getRegion();
+        this.status = status;
         this.endingTime = Timestamp.from(Instant.now());
+        this.startingTime = matchTemp.getStartingTime();
+        if(winner != null) {
+            this.winner = winner;
+        }
     }
 
     public long getId() {

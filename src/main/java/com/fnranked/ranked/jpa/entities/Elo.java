@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
 
 @Entity
 public class Elo {
@@ -16,7 +15,6 @@ public class Elo {
     @OneToOne
     MatchType matchType;
 
-    @NotNull
     double eloRating;
 
     public MatchType getMatchType() {
@@ -32,5 +30,21 @@ public class Elo {
     public Elo(MatchType matchType, double eloRating) {
         this.matchType = matchType;
         this.eloRating = eloRating;
+    }
+
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public void setMatchType(MatchType matchType) {
+        this.matchType = matchType;
+    }
+
+    public void setEloRating(double eloRating) {
+        this.eloRating = eloRating;
+    }
+
+    public long getId() {
+        return Id;
     }
 }

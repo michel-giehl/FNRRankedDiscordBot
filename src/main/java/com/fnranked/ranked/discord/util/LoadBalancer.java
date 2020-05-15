@@ -5,6 +5,7 @@ import com.fnranked.ranked.jpa.repo.MatchServerRepo;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,8 +25,9 @@ public class LoadBalancer {
     /**
      * finds the guild with the fewest channels.
      */
-    public Optional<Guild> getBestGuild() {
-        List<Long> guildIds = ((List<MatchServer>)matchServerRepo.findAll()).stream().map(MatchServer::getId).collect(Collectors.toList());
+    public Pair<Guild, MatchServer> getBestMatchServer() {
+        List<MatchServer> matchServers = ((List<MatchServer>)matchServerRepo.findAll());
+        List<Long> guildIds = matchServers.stream().map(MatchServer::getId).collect(Collectors.toList());
         List<Guild> guilds = new ArrayList<>();
         JDA jda = jdaContainer.getJda();
         for(long guildId : guildIds) {
@@ -33,6 +35,8 @@ public class LoadBalancer {
             if(guild != null)
                 guilds.add(guild);
         }
-        return guilds.stream().min(Comparator.comparingInt(o -> o.getChannels().size()));
+        var guild = guilds.stream().min(Comparator.comparingInt(o -> o.getChannels().size())).get();
+        var matchServer = matchServers.stream().filter(m -> m.getId() == guild.getIdLong()).findFirst().get();
+        return Pair.of(guild, matchServer);
     }
 }
