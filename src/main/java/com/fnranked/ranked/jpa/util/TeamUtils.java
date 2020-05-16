@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,24 +32,47 @@ public class TeamUtils {
      */
     @Transactional
     public Team getSolo(MatchType matchType, long discordId) {
-        var playerOpt = playerRepository.findById(discordId);
-        final Player player;
-        if(playerOpt.isPresent()) {
-            player = playerOpt.get();
-            Optional<Team> teamOptional = teamRepository.findByCaptainAndSizeAndActiveIsTrue(player, 1);
-            if(teamOptional.isPresent()) {
-                return teamOptional.get();
-            }
-        } else {
-            player = new Player(discordId);
-            playerRepository.save(player);
+        Player player = getPlayer(discordId);
+        Optional<Team> teamOptional = teamRepository.findByCaptainAndSizeAndActiveIsTrue(player, 1);
+        if(teamOptional.isPresent()) {
+            return teamOptional.get();
         }
-        Player newPlayer = playerRepository.findById(discordId).get();
-        Team team = new Team(newPlayer, 1);
-        team.setPlayerList(List.of(newPlayer));
+        Team team = new Team(player, 1);
+        team.setPlayerList(List.of(player));
+        //TODO don't handle ELO here.
         Elo elo = new Elo(matchType, 200);
         team.setEloList(List.of(elo));
         teamRepository.save(team);
         return team;
+    }
+
+    @Transactional
+    public Player getPlayer(long discordId) {
+        var playerOpt = playerRepository.findById(discordId);
+        final Player player;
+        if(playerOpt.isPresent()) {
+            return playerOpt.get();
+        } else {
+            player = new Player(discordId);
+            playerRepository.save(player);
+        }
+        return playerRepository.findById(discordId).get();
+    }
+
+    /**
+     * Creates a team with of any size
+     * @param captainId captain of the team
+     * @param playerIds collection of players
+     */
+    @Transactional
+    public void createTeam(long captainId, long... playerIds) {
+        Player captain = getPlayer(captainId);
+        List<Player> players = new ArrayList<>();
+        players.add(captain);
+        for(long playerId : playerIds) {
+            players.add(getPlayer(playerId));
+        }
+        Team team = new Team(captain, playerIds.length+1);
+        team.setPlayerList(players);
     }
 }
