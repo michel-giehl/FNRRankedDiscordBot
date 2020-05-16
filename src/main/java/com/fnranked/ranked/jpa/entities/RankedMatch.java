@@ -1,12 +1,11 @@
 package com.fnranked.ranked.jpa.entities;
 
-import com.fnranked.ranked.data.MatchStatus;
-import com.fnranked.ranked.data.Region;
+import com.fnranked.ranked.api.entities.MatchStatus;
+import com.fnranked.ranked.api.entities.Region;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.sql.Timestamp;

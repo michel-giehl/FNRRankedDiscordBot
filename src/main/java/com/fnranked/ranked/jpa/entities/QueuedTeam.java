@@ -1,11 +1,9 @@
 package com.fnranked.ranked.jpa.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 public class QueuedTeam {
@@ -18,6 +16,9 @@ public class QueuedTeam {
     Team team;
 
     Timestamp timeJoined;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    List<MatchMessages> matchMessages;
 
     public QueuedTeam() {
 

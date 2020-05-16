@@ -1,10 +1,9 @@
 package com.fnranked.ranked.jpa.util;
 
-import com.fnranked.ranked.discord.util.JDAContainer;
-import com.fnranked.ranked.discord.util.MemberUtils;
+import com.fnranked.ranked.util.JDAContainer;
+import com.fnranked.ranked.util.UserUtils;
 import com.fnranked.ranked.jpa.entities.MatchServer;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
-import com.fnranked.ranked.jpa.entities.Player;
 import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.MatchServerRepo;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
@@ -34,7 +33,7 @@ public class MatchUtils {
     @Autowired
     JDAContainer jdaContainer;
     @Autowired
-    MemberUtils memberUtils;
+    UserUtils userUtils;
 
     @Transactional
     public List<MatchTemp> findAllMatchesByUserIdInMatchServer(long userId, long matchServerId) {
@@ -69,7 +68,7 @@ public class MatchUtils {
     }
 
     public void endMatch(MatchTemp matchTemp) {
-        memberUtils.kickMembersAfterMatch(matchTemp);
+        userUtils.kickMembersAfterMatch(matchTemp);
     }
 
 }

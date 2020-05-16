@@ -1,15 +1,13 @@
 package com.fnranked.ranked.jpa.entities;
 
-import com.fnranked.ranked.data.MatchVote;
-import com.fnranked.ranked.data.Region;
+import com.fnranked.ranked.api.entities.MatchVote;
+import com.fnranked.ranked.api.entities.Region;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Used to store temporary Match Data.

@@ -1,15 +1,13 @@
 package com.fnranked.ranked.menus;
 
-import com.fnranked.ranked.data.Region;
-import com.fnranked.ranked.discord.util.JDAContainer;
+import com.fnranked.ranked.api.entities.Region;
+import com.fnranked.ranked.util.JDAContainer;
 import com.fnranked.ranked.jpa.entities.Queue;
 import com.fnranked.ranked.jpa.repo.QueueRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.internal.JDAImpl;
-import net.dv8tion.jda.internal.entities.EmoteImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 

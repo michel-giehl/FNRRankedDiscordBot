@@ -1,9 +1,8 @@
 package com.fnranked.ranked.jpa.repo;
 
-import com.fnranked.ranked.data.Region;
+import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Queue;
-import com.fnranked.ranked.jpa.entities.Team;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

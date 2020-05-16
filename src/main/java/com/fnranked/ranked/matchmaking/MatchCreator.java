@@ -1,9 +1,8 @@
 package com.fnranked.ranked.matchmaking;
 
-import com.fnranked.ranked.data.Region;
-import com.fnranked.ranked.discord.messages.MessageUtils;
-import com.fnranked.ranked.discord.util.ChannelManager;
-import com.fnranked.ranked.jpa.entities.CreativeMap;
+import com.fnranked.ranked.api.entities.Region;
+import com.fnranked.ranked.messages.MessageUtils;
+import com.fnranked.ranked.util.ChannelCreator;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
 import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Team;
@@ -24,7 +23,7 @@ public class MatchCreator {
     @Autowired
     MatchTempRepository matchTempRepository;
     @Autowired
-    ChannelManager channelManager;
+    ChannelCreator channelCreator;
     @Autowired
     CreativeMapRepository creativeMapRepository;
     @Autowired
@@ -37,7 +36,6 @@ public class MatchCreator {
 
     @Transactional
     public void createMatch(MatchType matchType, Region region, Team teamA, Team teamB) {
-        System.out.println("creating match");
         var map = creativeMapRepository.selectRandom(matchType);
         var tmpMatch = new MatchTemp(matchType, map.get(), teamA, teamB);
         tmpMatch.setRegion(region);

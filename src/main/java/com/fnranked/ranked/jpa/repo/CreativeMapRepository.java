@@ -11,6 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface CreativeMapRepository extends CrudRepository<CreativeMap, Long> {
-    @Query(value = "SELECT * FROM creative_map c WHERE c.match_type_id = :matchType ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM gim_fnranked_test.creative_map c WHERE c.match_type_id = :matchType ORDER BY RAND() LIMIT 1", nativeQuery = true)
     Optional<CreativeMap> selectRandom(@Param("matchType")MatchType matchType);
 }

@@ -15,9 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.sql.Time;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -65,8 +63,6 @@ public class Matchmaking {
                         }
                         notToMatch.add(teamA);
                         notToMatch.add(teamB);
-                        System.out.println("MATCH FOUND");
-                        //TODO create match and do stuff.
                         matchCreator.createMatch(queue.getMatchType(), queue.getRegion(), teamA.getTeam(), teamB.getTeam());
                     }
                 }

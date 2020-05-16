@@ -3,6 +3,7 @@ package com.fnranked.ranked.matchmaking;
 import com.fnranked.ranked.jpa.entities.Queue;
 import com.fnranked.ranked.jpa.entities.QueuedTeam;
 import com.fnranked.ranked.jpa.entities.Team;
+import com.fnranked.ranked.jpa.repo.MatchTempRepository;
 import com.fnranked.ranked.jpa.repo.QueueRepository;
 import com.fnranked.ranked.jpa.repo.QueuedTeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +22,17 @@ public class QueueChanger {
     QueueRepository queueRepository;
     @Autowired
     QueuedTeamRepository queuedTeamRepository;
+    @Autowired
+    MatchTempRepository matchTempRepository;
 
     @Transactional
-    public void joinQueue(Queue queue, Team team) {
-        queue.getQueueing().add(new QueuedTeam(team));
-        queueRepository.save(queue);
+    public boolean joinQueue(Queue queue, Team team) {
+        if(!isQueueingOrInMatch(team)) {
+            queue.getQueueing().add(new QueuedTeam(team));
+            queueRepository.save(queue);
+            return true;
+        }
+        return false;
     }
 
     @Transactional
@@ -45,5 +53,9 @@ public class QueueChanger {
             queuedTeamRepository.deleteAll(queuedTeams);
             queueRepository.save(queue);
         });
+    }
+
+    private boolean isQueueingOrInMatch(Team team) {
+        return queuedTeamRepository.existsByTeam(team) || matchTempRepository.existsByTeamAOrTeamB(team, team);
     }
 }

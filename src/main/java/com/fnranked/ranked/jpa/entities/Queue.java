@@ -1,6 +1,6 @@
 package com.fnranked.ranked.jpa.entities;
 
-import com.fnranked.ranked.data.Region;
+import com.fnranked.ranked.api.entities.Region;
 
 import javax.persistence.*;
 import java.util.List;

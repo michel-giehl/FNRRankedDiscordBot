@@ -1,23 +1,22 @@
 package com.fnranked.ranked;
 
-import com.fnranked.ranked.discord.commands.AddMatchTypeCommand;
-import com.fnranked.ranked.discord.commands.AddQueueCommand;
-import com.fnranked.ranked.discord.commands.SendQueueMessageCommand;
-import com.fnranked.ranked.discord.commands.WinnerCommand;
-import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerBuilder;
-import com.fnranked.ranked.discord.commands.commandhandler.CommandHandlerListener;
-import com.fnranked.ranked.discord.commands.commandhandler.command.CommandBuilder;
-import com.fnranked.ranked.discord.listener.GuildMemberJoinListener;
-import com.fnranked.ranked.discord.listener.MatchAcceptListener;
-import com.fnranked.ranked.discord.listener.MatchVoteListener;
-import com.fnranked.ranked.discord.listener.QueueListener;
-import com.fnranked.ranked.discord.util.JDAContainer;
+import com.fnranked.ranked.commands.*;
+import com.fnranked.ranked.commands.commandhandler.CommandHandlerBuilder;
+import com.fnranked.ranked.commands.commandhandler.CommandHandlerListener;
+import com.fnranked.ranked.commands.commandhandler.command.CommandBuilder;
+import com.fnranked.ranked.listener.GuildMemberJoinListener;
+import com.fnranked.ranked.listener.MatchAcceptListener;
+import com.fnranked.ranked.listener.MatchVoteListener;
+import com.fnranked.ranked.listener.QueueListener;
+import com.fnranked.ranked.util.JDAContainer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
+import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.security.auth.login.LoginException;
-import java.util.List;
 
 @Component
 public class FnRanked {
@@ -45,6 +43,8 @@ public class FnRanked {
     CommandHandlerListener commandHandlerListener;
     @Autowired
     WinnerCommand winnerCommand;
+    @Autowired
+    CancelCommand cancelCommand;
 
     @Autowired
     QueueListener queueListener;
@@ -54,6 +54,7 @@ public class FnRanked {
     MatchAcceptListener matchAcceptListener;
     @Autowired
     MatchVoteListener matchVoteListener;
+
 
 
     @Value("${bot.token}")
@@ -81,9 +82,12 @@ public class FnRanked {
                     .addCommand(new CommandBuilder("addmatchtype", addMatchTypeCommand).build())
                     .addCommand(new CommandBuilder("addqueue", addQueueCommand).build())
                     .addCommand(new CommandBuilder("winner", winnerCommand).build())
+                    .addCommand(new CommandBuilder("cancel", cancelCommand).build())
                     .addCommand(new CommandBuilder("sendqueuemessage", sendQueueMessageCommand).build()));
         } catch (LoginException e1) {
             e1.printStackTrace();
         }
+        //Ignore DM context exceptions
+        RestAction.setDefaultFailure(new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER));
     }
 }
