@@ -38,7 +38,7 @@ public class CommandHandlerListener extends ListenerAdapter {
 
         String command = args[0].replace(commandPrefix, "");
         commandHandlerBuilder.commandList.forEach(c -> {
-            if (c.getCommandName().equals(command) || c.getCommandAlias().equals(command)) {
+            if (c.getCommandName().equals(command)) {
                 handleCommand(c, event.getMember(), event.getChannel(), event.getMessage(), args);
             }
         });
@@ -48,17 +48,6 @@ public class CommandHandlerListener extends ListenerAdapter {
         if (!command.getBotAllowance() && message.getAuthor().isBot()) {
             return;
         }
-
-        ArrayList<Long> allowedChannels = command.getCommandChannels();
-        if (!allowedChannels.isEmpty() && !allowedChannels.contains(channel.getIdLong())) {
-            return;
-        }
-
-        ArrayList<Permission> neededPermissions = command.getCommandPermissions();
-        if (!neededPermissions.isEmpty() && !sender.getPermissions().containsAll(neededPermissions)) {
-            return;
-        }
-
         command.getHandlerListener().onCommand(sender, channel, message, Arrays.copyOfRange(args, 1, args.length));
     }
 }

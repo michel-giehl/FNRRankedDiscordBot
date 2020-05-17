@@ -12,7 +12,7 @@ public class Queue {
     @GeneratedValue
     long Id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     MatchType matchType;
 
     Region region;

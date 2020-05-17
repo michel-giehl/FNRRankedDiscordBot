@@ -1,5 +1,6 @@
 package com.fnranked.ranked.matchmaking;
 
+import com.fnranked.ranked.elo.EloUtils;
 import com.fnranked.ranked.jpa.entities.Elo;
 import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Queue;
@@ -39,6 +40,8 @@ public class Matchmaking {
     MatchCreator matchCreator;
     @Autowired
     QueuedTeamRepository queuedTeamRepository;
+    @Autowired
+    EloUtils eloUtils;
 
     @Scheduled(initialDelay = 15_000L, fixedRate = 5000L)
     public void findMatchesFromQueues() {
@@ -109,14 +112,10 @@ public class Matchmaking {
     }
 
     private double getEloRatingForMatchType(MatchType matchType, QueuedTeam queuedTeam) {
-        var team = teamRepository.findTeamByIdWithEloList(queuedTeam.getTeam().getId());
-        for (Elo elo : team.get().getEloList()) {
-            if (elo.getMatchType().equals(matchType)) {
-                return elo.getEloRating();
-            }
-        }
+        Elo elo = eloUtils.getTeamElo(queuedTeam.getTeam().getId(), matchType);
+        return  elo.getEloRating();
         //Getting elo should always be successful if they have managed to queue for it but this is to avoid any NPEs
-        logger.warn(String.format("Error finding elo for QueuedTeam with team id of \"%s\", and MatchType \"%s\"(%s), defaulting to 200.", queuedTeam.getTeam().getId(), matchType.getName(), matchType.getId()));
-        return 200;
+        //logger.warn(String.format("Error finding elo for QueuedTeam with team id of \"%s\", and MatchType \"%s\"(%s), defaulting to 200.", queuedTeam.getTeam().getId(), matchType.getName(), matchType.getId()));
+        //return 200;
     }
 }

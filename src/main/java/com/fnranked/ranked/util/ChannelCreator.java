@@ -45,17 +45,17 @@ public class ChannelCreator {
     public void createMatchChannel(MatchTemp tempMatch, Result<TextChannel> result) {
         System.out.println("creating channel");
         var matchServerOpt = loadBalancer.getBestMatchServer();
-        if(matchServerOpt.getFirst() == null) {
+        if (matchServerOpt.getFirst() == null) {
             logger.warn("Unable to create match channel for " + tempMatch.toString() + " due to the JDA Guild with id #" + tempMatch.getGuildId() + " being null");
             return;
         }
         Guild guild = matchServerOpt.getFirst();
         tempMatch.setMatchServer(matchServerOpt.getSecond());
         System.out.println("GUILD: " + guild.getIdLong() + " | name: " + guild.getName());
-        String matchId = (tempMatch.getStartingTime().toInstant().toEpochMilli()+"");
-        var channelAction = guild.createTextChannel("match-" + matchId.substring(matchId.length()-4));
+        String matchId = (tempMatch.getStartingTime().toInstant().toEpochMilli() + "");
+        var channelAction = guild.createTextChannel("match-" + matchId.substring(matchId.length() - 4));
         var members = userUtils.getAllMembersInTempMatch(tempMatch);
-        for(Member member : members) {
+        for (Member member : members) {
             channelAction.addPermissionOverride(member, List.of(Permission.VIEW_CHANNEL), null);
         }
         //Create channel. Send Information message. Send Vote message. Save temp match

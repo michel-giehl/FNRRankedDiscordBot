@@ -8,7 +8,7 @@ import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.CreativeMapRepository;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
-import com.fnranked.ranked.jpa.util.MatchUtils;
+import com.fnranked.ranked.util.MatchUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -1,12 +1,15 @@
 package com.fnranked.ranked.listener;
 
 import com.fnranked.ranked.api.entities.Region;
+import com.fnranked.ranked.jpa.entities.Player;
 import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.util.UserUtils;
 import com.fnranked.ranked.jpa.repo.*;
-import com.fnranked.ranked.jpa.util.TeamUtils;
+import com.fnranked.ranked.util.TeamUtils;
 import com.fnranked.ranked.matchmaking.QueueChanger;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +36,8 @@ public class QueueListener extends ListenerAdapter {
     MessageUtils messageUtils;
     @Autowired
     UserUtils userUtils;
+    @Autowired
+    QueuedTeamRepository queuedTeamRepository;
 
     @Transactional
     @Override
@@ -55,5 +60,25 @@ public class QueueListener extends ListenerAdapter {
                 });
             });
         });
+    }
+
+    @Transactional
+
+    @Override
+    public void onPrivateMessageReactionAdd(@Nonnull PrivateMessageReactionAddEvent event) {
+        if(event.getUser().isBot()) return;
+        if(event.getReaction().getReactionEmote().isEmoji() && event.getReaction().getReactionEmote().getName().equalsIgnoreCase("❌")) {
+            Player p = teamUtils.getPlayer(event.getUserIdLong());
+            System.out.println("user reacted to leave queue");
+            queuedTeamRepository.findAll().forEach(qt -> {
+                if(qt.getTeam().getPlayerList().contains(p)) {
+                    queueRepository.findByQueueingContaining(qt).ifPresent(q -> {
+                        queueChanger.leaveQueue(q, qt.getTeam());
+                        System.out.println("Team removed from queue");
+                        event.getChannel().retrieveMessageById(event.getMessageId()).flatMap(Message::delete).queue();
+                    });
+                }
+            });
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.fnranked.ranked.listener;
 
 import com.fnranked.ranked.jpa.entities.Player;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
-import com.fnranked.ranked.jpa.util.TeamUtils;
+import com.fnranked.ranked.util.TeamUtils;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,5 @@ public class DuoListener extends ListenerAdapter {
             });
             return;
         }
-
     }
 }

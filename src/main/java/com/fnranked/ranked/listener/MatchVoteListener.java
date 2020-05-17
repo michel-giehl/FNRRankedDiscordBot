@@ -1,9 +1,10 @@
 package com.fnranked.ranked.listener;
 
 import com.fnranked.ranked.api.entities.MatchVote;
+import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
-import com.fnranked.ranked.jpa.util.MatchUtils;
+import com.fnranked.ranked.util.MatchUtils;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +56,19 @@ public class MatchVoteListener extends ListenerAdapter {
                     }
                     break;
             }
-            messageUtils.updateVoteMessage(matchTemp);
-            matchTempRepository.save(matchTemp);
-            //TODO check for win
+            if(matchTemp.getTeamAVote() == matchTemp.getTeamBVote() && matchTemp.getTeamAVote() != MatchVote.PENDING) {
+                MatchVote vote = matchTemp.getTeamAVote();
+                if(vote == MatchVote.CANCEL) {
+                    //CANCEL
+                    matchUtils.endMatch(matchTemp, null);
+                } else {
+                    Team winner = vote == MatchVote.TEAM_A ? matchTemp.getTeamA() : matchTemp.getTeamB();
+                    matchUtils.endMatch(matchTemp, winner);
+                }
+            } else {
+                messageUtils.updateVoteMessage(matchTemp);
+                matchTempRepository.save(matchTemp);
+            }
         });
     }
 }

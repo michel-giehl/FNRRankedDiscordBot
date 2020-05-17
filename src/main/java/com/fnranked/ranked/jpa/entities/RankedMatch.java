@@ -63,7 +63,7 @@ public class RankedMatch {
      * Used to create a new Match
      *
      */
-    public RankedMatch(MatchTemp matchTemp, Team winner, MatchStatus status) {
+    public RankedMatch(MatchTemp matchTemp, @Nullable Team winner, MatchStatus status) {
         this.Id = matchTemp.getId();
         this.teamA = matchTemp.getTeamA();
         this.teamB = matchTemp.getTeamB();

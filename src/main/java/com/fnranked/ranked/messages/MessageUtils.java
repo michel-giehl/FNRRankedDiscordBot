@@ -3,6 +3,7 @@ package com.fnranked.ranked.messages;
 import com.fnranked.ranked.api.entities.MatchVote;
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.api.entities.TeamSize;
+import com.fnranked.ranked.jpa.repo.QueuedTeamRepository;
 import com.fnranked.ranked.util.JDAContainer;
 import com.fnranked.ranked.util.UserUtils;
 import com.fnranked.ranked.elo.EloUtils;
@@ -12,7 +13,7 @@ import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.MatchMessagRepo;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
-import com.fnranked.ranked.jpa.util.MatchUtils;
+import com.fnranked.ranked.util.MatchUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -49,6 +50,8 @@ public class MessageUtils {
     MatchUtils matchUtils;
     @Autowired
     UserUtils userUtils;
+    @Autowired
+    QueuedTeamRepository queuedTeamRepository;
 
     @Value("${emote.error}")
     long errorEmoteId;
@@ -87,12 +90,13 @@ public class MessageUtils {
 
     public void sendDMQueueMessage(long userId) {
         User user = jdaContainer.getJda().getUserById(userId);
+        if(user == null) return;
         EmbedBuilder qMsg = new EmbedBuilder();
         qMsg.setColor(loadingColor);
         qMsg.setTitle(encodeEmote(loadingEmoteId) + " Looking for suitable opponent...");
-        user.openPrivateChannel().queue(pc -> {
-            pc.sendMessage(qMsg.build()).queue();
-        });
+        user.openPrivateChannel()
+                .flatMap(pc -> pc.sendMessage(qMsg.build()))
+                .flatMap(msg -> msg.addReaction("❌")).queue();
     }
 
     public MessageEmbed getMatchNotAcceptedEmbed()  {
@@ -104,14 +108,13 @@ public class MessageUtils {
 
     public void sendMatchReadyMessage(MatchTemp matchTemp, TextChannel tc) {
         tc.createInvite().setMaxAge(60*60).queue(invite -> {
+            EmbedBuilder readyEmbed = new EmbedBuilder();
+            readyEmbed.setColor(successColor);
+            readyEmbed.setTitle(encodeEmote(successEmoteId) + " Match ready");
+            readyEmbed.setDescription("Your match is ready. Click [here](" + invite.getUrl() + ") to get to your match channel");
             userUtils.getUsersInMatch(matchTemp).forEach(u -> {
-                u.openPrivateChannel().queue(pc -> {
-                    EmbedBuilder readyEmbed = new EmbedBuilder();
-                    readyEmbed.setColor(successColor);
-                    readyEmbed.setTitle(encodeEmote(successEmoteId) + " Match ready");
-                    readyEmbed.setDescription("Your match is ready. Click [here](" + invite.getUrl() + ") to get to your match channel");
-                    pc.sendMessage(readyEmbed.build()).queue();
-                });
+                u.openPrivateChannel()
+                        .flatMap(pc -> pc.sendMessage(readyEmbed.build())).queue();
             });
         });
 
@@ -138,9 +141,9 @@ public class MessageUtils {
             //TODO user elo
             u.openPrivateChannel().queue(pc -> {
                 Team userTeam = matchUtils.getTeamByUserId(u.getIdLong(), matchTemp);
-                double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType()).get().getEloRating();
+                double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType()).getEloRating();
                 Team oppTeam = matchTemp.getTeamA().equals(userTeam) ? matchTemp.getTeamB() : matchTemp.getTeamA();
-                double oppElo = eloUtils.getTeamElo(oppTeam.getId(), matchTemp.getMatchType()).get().getEloRating();
+                double oppElo = eloUtils.getTeamElo(oppTeam.getId(), matchTemp.getMatchType()).getEloRating();
                 acceptEmbed.setDescription(String.format("A match has been found for you.\n```py\nYour elo: %.0f\nOpponents elo: %.0f``` Click :white_check_mark: to accept the match.", elo, oppElo));
                 pc.sendMessage(acceptEmbed.build()).queue(msg -> {
                     msg.addReaction("✅").queue();
@@ -166,9 +169,10 @@ public class MessageUtils {
     }
 
     public void updateVoteMessage(MatchTemp matchTemp) {
-        jdaContainer.getJda().getTextChannelById(matchTemp.getMatchChannelId()).retrieveMessageById(matchTemp.getVoteMessageId()).queue(msg -> {
-            msg.editMessage(getVoteMessage(matchTemp)).queue();
-        });
+        TextChannel tc = jdaContainer.getJda().getTextChannelById(matchTemp.getMatchChannelId());
+        if(tc == null) return;
+        tc.retrieveMessageById(matchTemp.getVoteMessageId())
+                .flatMap(msg ->msg.editMessage(getVoteMessage(matchTemp))).queue(null, null);
     }
 
     public MessageEmbed getVoteMessage(MatchTemp matchTemp) {

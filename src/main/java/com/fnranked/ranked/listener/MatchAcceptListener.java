@@ -5,7 +5,7 @@ import com.fnranked.ranked.util.ChannelCreator;
 import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.MatchMessagRepo;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
-import com.fnranked.ranked.jpa.util.MatchUtils;
+import com.fnranked.ranked.util.MatchUtils;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;

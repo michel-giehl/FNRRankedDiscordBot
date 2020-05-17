@@ -1,18 +1,19 @@
-package com.fnranked.ranked.jpa.util;
+package com.fnranked.ranked.util;
 
+import com.fnranked.ranked.api.entities.MatchStatus;
+import com.fnranked.ranked.elo.EloCalculator;
+import com.fnranked.ranked.jpa.entities.RankedMatch;
+import com.fnranked.ranked.jpa.repo.*;
 import com.fnranked.ranked.util.JDAContainer;
 import com.fnranked.ranked.util.UserUtils;
 import com.fnranked.ranked.jpa.entities.MatchServer;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
 import com.fnranked.ranked.jpa.entities.Team;
-import com.fnranked.ranked.jpa.repo.MatchServerRepo;
-import com.fnranked.ranked.jpa.repo.MatchTempRepository;
-import com.fnranked.ranked.jpa.repo.PlayerRepository;
-import com.fnranked.ranked.jpa.repo.TeamRepository;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,8 @@ public class MatchUtils {
     @Autowired
     MatchTempRepository matchTempRepository;
     @Autowired
+    RankedMatchRepository rankedMatchRepository;
+    @Autowired
     TeamRepository teamRepository;
     @Autowired
     MatchServerRepo matchServerRepo;
@@ -34,6 +37,10 @@ public class MatchUtils {
     JDAContainer jdaContainer;
     @Autowired
     UserUtils userUtils;
+    @Autowired
+    ChannelCreator channelCreator;
+    @Autowired
+    EloCalculator eloCalculator;
 
     @Transactional
     public List<MatchTemp> findAllMatchesByUserIdInMatchServer(long userId, long matchServerId) {
@@ -67,8 +74,20 @@ public class MatchUtils {
         }
     }
 
-    public void endMatch(MatchTemp matchTemp) {
+    public void endMatch(MatchTemp matchTemp, @Nullable Team winner) {
+        final MatchStatus matchStatus;
+        if(winner == null) {
+            matchStatus = MatchStatus.CANCELED;
+        } else {
+            matchStatus = MatchStatus.FINISHED;
+        }
+        //Calculate elo, update teams, save match
+        RankedMatch rankedMatch = new RankedMatch(matchTemp, winner, matchStatus);
+        rankedMatch = eloCalculator.updateRatings(rankedMatch);
+        rankedMatchRepository.save(rankedMatch);
+        //Get rid of all the trash
+        matchTempRepository.delete(matchTemp);
         userUtils.kickMembersAfterMatch(matchTemp);
+        channelCreator.deleteChannel(matchTemp);
     }
-
 }

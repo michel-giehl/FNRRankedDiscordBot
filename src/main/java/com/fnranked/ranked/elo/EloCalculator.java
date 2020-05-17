@@ -56,7 +56,7 @@ public class EloCalculator {
         return new double[] { rating1, rating2 };
     }
 
-    public void updateRatings(RankedMatch rankedMatch) {
+    public RankedMatch updateRatings(RankedMatch rankedMatch) {
         Team teamAWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamA().getId()).get();
         Team teamBWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamB().getId()).get();
         Elo teamAElo = teamAWithElo.getEloList().stream().filter(e -> e.getMatchType().equals(rankedMatch.getMatchType())).findFirst().get();
@@ -76,6 +76,6 @@ public class EloCalculator {
         rankedMatch.setTeamBEloChange(teamBEloChange);
         eloRepository.save(teamAElo);
         eloRepository.save(teamBElo);
-        rankedMatchRepository.save(rankedMatch);
+        return rankedMatch;
     }
 }

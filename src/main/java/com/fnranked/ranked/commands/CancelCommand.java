@@ -3,19 +3,17 @@ package com.fnranked.ranked.commands;
 import com.fnranked.ranked.api.entities.MatchStatus;
 import com.fnranked.ranked.api.entities.PermissionLevel;
 import com.fnranked.ranked.commands.commandhandler.listener.CommandListener;
+import com.fnranked.ranked.util.ChannelCreator;
 import com.fnranked.ranked.util.PermissionUtil;
 import com.fnranked.ranked.jpa.entities.RankedMatch;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
 import com.fnranked.ranked.jpa.repo.RankedMatchRepository;
-import com.fnranked.ranked.jpa.util.MatchUtils;
+import com.fnranked.ranked.util.MatchUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
-
 
 @Component
 public class CancelCommand implements CommandListener {
@@ -28,6 +26,8 @@ public class CancelCommand implements CommandListener {
     RankedMatchRepository matchRepository;
     @Autowired
     PermissionUtil permissionUtil;
+    @Autowired
+    ChannelCreator channelCreator;
 
     @Override
     public void onCommand(Member sender, TextChannel channel, Message message, String[] args) {
@@ -36,8 +36,7 @@ public class CancelCommand implements CommandListener {
             matchTempRepository.delete(matchTemp);
             RankedMatch rankedMatch = new RankedMatch(matchTemp, null, MatchStatus.CANCELED);
             matchRepository.save(rankedMatch);
-            channel.sendMessage("Match canceled.").queue();
-            channel.delete().queueAfter(10, TimeUnit.SECONDS);
+            channelCreator.deleteChannel(matchTemp);
         });
     }
 }

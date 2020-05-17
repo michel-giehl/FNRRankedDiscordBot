@@ -1,4 +1,4 @@
-package com.fnranked.ranked.jpa.util;
+package com.fnranked.ranked.util;
 
 import com.fnranked.ranked.jpa.entities.Elo;
 import com.fnranked.ranked.jpa.entities.MatchType;

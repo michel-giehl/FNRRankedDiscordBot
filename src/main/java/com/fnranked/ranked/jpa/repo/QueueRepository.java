@@ -3,6 +3,7 @@ package com.fnranked.ranked.jpa.repo;
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Queue;
+import com.fnranked.ranked.jpa.entities.QueuedTeam;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 public interface QueueRepository extends CrudRepository<Queue, Long> {
     Optional<Queue> findById(long Id);
     Optional<Queue> findByMatchTypeAndRegion(MatchType a, Region r);
+    Optional<Queue> findByQueueingContaining(QueuedTeam t);
 
     List<Queue> findAllByRegionIs(Region region);
 
