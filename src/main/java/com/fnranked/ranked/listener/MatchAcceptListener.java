@@ -6,6 +6,7 @@ import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.MatchMessagRepo;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
 import com.fnranked.ranked.util.MatchUtils;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class MatchAcceptListener extends ListenerAdapter {
         long msgId = event.getMessageIdLong();
         matchMessagRepo.findFirstByMessageId(msgId).ifPresent(matchMessages ->
             matchTempRepository.findByMatchMessageId(matchMessages.getId()).ifPresent(matchTemp -> {
+                event.getChannel().retrieveMessageById(msgId).flatMap(Message::delete).queue();
                 Team userTeam = matchUtils.getTeamByUserId(event.getUserIdLong(), matchTemp);
                 boolean isTeamA = userTeam.equals(matchTemp.getTeamA());
                 if(isTeamA) {

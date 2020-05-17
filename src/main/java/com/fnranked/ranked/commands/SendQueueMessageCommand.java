@@ -50,6 +50,7 @@ public class SendQueueMessageCommand implements CommandListener {
             QueueMessage queueMessage = new QueueMessage();
             queueMessage.setChannelId(msg.getChannel().getIdLong());
             queueMessage.setQueueMessageId(msg.getIdLong());
+            queueMessage.setDMQueue(false);
             queueMessageRepository.save(queueMessage);
             channel.sendMessage("Queue message sent.").delay(10, TimeUnit.SECONDS).flatMap(Message::delete).queue();
             emotes.forEach(s -> msg.addReaction(s).queue());

@@ -3,22 +3,16 @@ package com.fnranked.ranked.messages;
 import com.fnranked.ranked.api.entities.MatchVote;
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.api.entities.TeamSize;
-import com.fnranked.ranked.jpa.repo.QueuedTeamRepository;
+import com.fnranked.ranked.jpa.entities.*;
+import com.fnranked.ranked.jpa.repo.*;
 import com.fnranked.ranked.util.JDAContainer;
 import com.fnranked.ranked.util.UserUtils;
 import com.fnranked.ranked.elo.EloUtils;
-import com.fnranked.ranked.jpa.entities.MatchMessages;
-import com.fnranked.ranked.jpa.entities.MatchTemp;
-import com.fnranked.ranked.jpa.entities.MatchType;
-import com.fnranked.ranked.jpa.entities.Team;
-import com.fnranked.ranked.jpa.repo.MatchMessagRepo;
-import com.fnranked.ranked.jpa.repo.MatchTempRepository;
 import com.fnranked.ranked.util.MatchUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.internal.utils.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static com.fnranked.ranked.api.entities.MatchVote.PENDING;
 
@@ -52,6 +49,12 @@ public class MessageUtils {
     UserUtils userUtils;
     @Autowired
     QueuedTeamRepository queuedTeamRepository;
+    @Autowired
+    QueueRepository queueRepository;
+    @Autowired
+    MatchTypeRepository matchTypeRepository;
+    @Autowired
+    QueueMessageRepository queueMessageRepository;
 
     @Value("${emote.error}")
     long errorEmoteId;
@@ -86,6 +89,20 @@ public class MessageUtils {
         }
         queueEmbed.setDescription(desc.toString());
         return queueEmbed.build();
+    }
+
+    public void sendQueueMessage(User user, MessageChannel messageChannel) {
+        List<Queue> queues = queueRepository.findAllByEnabledIsTrue();
+        Set<String> emotes = queues.stream().map(q -> q.getMatchType().getDisplayEmote()).collect(Collectors.toSet());
+        messageChannel.sendMessage(getQueueEmbed(((ArrayList<MatchType>)matchTypeRepository.findAll()), null)).queue(msg -> {
+            QueueMessage queueMessage = new QueueMessage();
+            queueMessage.setDMQueue(true);
+            queueMessage.setUserId(user.getIdLong());
+            queueMessage.setChannelId(msg.getChannel().getIdLong());
+            queueMessage.setQueueMessageId(msg.getIdLong());
+            queueMessageRepository.save(queueMessage);
+            emotes.forEach(s -> msg.addReaction(s).queue());
+        });
     }
 
     public void sendDMQueueMessage(long userId) {
@@ -155,6 +172,27 @@ public class MessageUtils {
                 }, e-> {});
             });
         }
+    }
+
+    public MessageEmbed getMatchHistoryEmbed(RankedMatch rankedMatch, boolean isWinner) {
+        String emoji = rankedMatch.getMatchType().getDisplayEmote();
+        String desc = isWinner ?
+                "You won" : "You lost";
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(isWinner ? successColor : errorColor);
+        eb.setTitle(String.format("%s **Match Summary** %s", emoji, emoji));
+        eb.setDescription(desc);
+        return eb.build();
+    }
+
+    public MessageEmbed getMatchCanceledEmbed(RankedMatch rankedMatch) {
+        String emoji = encodeEmote(errorEmoteId);
+        String desc = "Your match was canceled";
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(errorColor);
+        eb.setTitle(String.format("%s **Match canceled** %s", emoji, emoji));
+        eb.setDescription(desc);
+        return eb.build();
     }
 
     public MessageEmbed getMatchInformationEmbed(MatchTemp matchTemp) {

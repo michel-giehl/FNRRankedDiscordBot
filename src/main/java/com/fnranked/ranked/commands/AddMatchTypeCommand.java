@@ -34,7 +34,7 @@ public class AddMatchTypeCommand implements CommandListener {
             int teamSize = Integer.parseInt(args[0]);
             int requiredRoundsToWin = Integer.parseInt(args[1]);
             int season = Integer.parseInt(args[2]);
-            String emote = EncodingUtil.encodeCodepoints(args[3]);
+            String emote = args[3];
             String name = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
             MatchType matchType = new MatchType();
             matchType.setDisplayEmote(emote);

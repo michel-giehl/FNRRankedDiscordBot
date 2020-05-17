@@ -28,11 +28,10 @@ public class DuoListener extends ListenerAdapter {
         Player player = teamUtils.getPlayer(event.getMember().getIdLong());
         boolean teamExists = teamRepository.findByPlayerListContainingAndSizeAndActiveIsTrue(player, 2).isPresent();
         if(teamExists) {
-            event.getAuthor().openPrivateChannel().queue(pc -> {
+            event.getAuthor().openPrivateChannel().flatMap(pc ->
                 //TODO fancy message
                 //TODO option to leave (current) duo by reacting with :door:
-                pc.sendMessage("Error! You're already in a team").queue();
-            });
+                pc.sendMessage("Error! You're already in a team")).queue();
             return;
         }
     }

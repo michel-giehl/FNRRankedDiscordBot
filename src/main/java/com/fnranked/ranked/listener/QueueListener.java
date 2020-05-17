@@ -8,8 +8,8 @@ import com.fnranked.ranked.jpa.repo.*;
 import com.fnranked.ranked.util.TeamUtils;
 import com.fnranked.ranked.matchmaking.QueueChanger;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,9 +41,10 @@ public class QueueListener extends ListenerAdapter {
 
     @Transactional
     @Override
-    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
+    public void onMessageReactionAdd(@Nonnull MessageReactionAddEvent event) {
         if(event.getUser().isBot()) return;
         queueMessageRepository.findByQueueMessageId(event.getMessageIdLong()).ifPresent(qMsg -> {
+            //TODO use util class to get rid of getAsCodepoints()
             matchTypeRepository.findByDisplayEmote(event.getReactionEmote().getAsCodepoints()).ifPresent(mType -> {
                 userUtils.retrieveRegistrationData(event.getUserId(), data -> {
                     Region region = Region.parseRegion(data.getString("region"));
@@ -51,6 +52,11 @@ public class QueueListener extends ListenerAdapter {
                         var team = teamUtils.getSolo(mType, event.getUserIdLong());
                         if(queueChanger.joinQueue(q, team)) {
                             messageUtils.sendDMQueueMessage(event.getUserIdLong());
+                            //delete message if queue in DMs and delete queue message
+                            if(qMsg.isDMQueue()) {
+                                event.getChannel().retrieveMessageById(event.getMessageIdLong()).flatMap(Message::delete).queue();
+                                queueMessageRepository.delete(qMsg);
+                            }
                         } else {
                             event.getUser().openPrivateChannel().queue(pc -> {
                                 pc.sendMessage("You're already in a queue/match.").queue(s -> {}, e -> {});

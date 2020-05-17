@@ -74,5 +74,6 @@ public class TeamUtils {
         }
         Team team = new Team(captain, playerIds.length+1);
         team.setPlayerList(players);
+        teamRepository.save(team);
     }
 }

@@ -2,13 +2,11 @@ package com.fnranked.ranked.util;
 
 import com.fnranked.ranked.api.entities.MatchStatus;
 import com.fnranked.ranked.elo.EloCalculator;
-import com.fnranked.ranked.jpa.entities.RankedMatch;
+import com.fnranked.ranked.jpa.entities.*;
 import com.fnranked.ranked.jpa.repo.*;
+import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.util.JDAContainer;
 import com.fnranked.ranked.util.UserUtils;
-import com.fnranked.ranked.jpa.entities.MatchServer;
-import com.fnranked.ranked.jpa.entities.MatchTemp;
-import com.fnranked.ranked.jpa.entities.Team;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -41,6 +39,10 @@ public class MatchUtils {
     ChannelCreator channelCreator;
     @Autowired
     EloCalculator eloCalculator;
+    @Autowired
+    MessageUtils messageUtils;
+    @Autowired
+    MatchTypeRepository matchTypeRepository;
 
     @Transactional
     public List<MatchTemp> findAllMatchesByUserIdInMatchServer(long userId, long matchServerId) {
@@ -83,11 +85,24 @@ public class MatchUtils {
         }
         //Calculate elo, update teams, save match
         RankedMatch rankedMatch = new RankedMatch(matchTemp, winner, matchStatus);
-        rankedMatch = eloCalculator.updateRatings(rankedMatch);
+        if(matchStatus == MatchStatus.FINISHED)
+            rankedMatch = eloCalculator.updateRatings(rankedMatch);
         rankedMatchRepository.save(rankedMatch);
         //Get rid of all the trash
         matchTempRepository.delete(matchTemp);
         userUtils.kickMembersAfterMatch(matchTemp);
         channelCreator.deleteChannel(matchTemp);
+        final RankedMatch finalRankedMatch = rankedMatch;
+        //DM users
+        //TODO refactor maybe
+        for (User user : userUtils.getUsersInMatch(matchTemp)) {
+            if(matchStatus == MatchStatus.FINISHED) {
+                boolean isWinner = rankedMatch.getWinner().getPlayerList().stream().anyMatch(p -> p.getId() == user.getIdLong());
+                user.openPrivateChannel().flatMap(pc -> pc.sendMessage(messageUtils.getMatchHistoryEmbed(finalRankedMatch, isWinner))).queue();
+            } else {
+                user.openPrivateChannel().flatMap(pc -> pc.sendMessage(messageUtils.getMatchCanceledEmbed(finalRankedMatch))).queue();
+            }
+            user.openPrivateChannel().queue(pc -> messageUtils.sendQueueMessage(user, pc));
+        }
     }
 }

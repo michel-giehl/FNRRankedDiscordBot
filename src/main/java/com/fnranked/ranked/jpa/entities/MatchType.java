@@ -1,5 +1,7 @@
 package com.fnranked.ranked.jpa.entities;
 
+import net.dv8tion.jda.internal.utils.EncodingUtil;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -35,11 +37,11 @@ public class MatchType {
     }
 
     public String getDisplayEmote() {
-        return displayEmote;
+        return EncodingUtil.decodeCodepoint(displayEmote);
     }
 
     public void setDisplayEmote(String displayEmote) {
-        this.displayEmote = displayEmote;
+        this.displayEmote = EncodingUtil.encodeCodepoints(displayEmote);
     }
 
     public List<CreativeMap> getMapPool() {

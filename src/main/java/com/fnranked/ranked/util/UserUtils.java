@@ -72,11 +72,9 @@ public class UserUtils {
 
     public void kickMembersAfterMatch(MatchTemp matchtemp) {
         List<Member> memberToKick = getAllMembersInTempMatch(matchtemp);
-        if(!memberToKick.isEmpty()) {
-            for(Member m : memberToKick) {
-                if(!permissionUtil.hasPermission(m.getUser(), PermissionLevel.STAFF)) {
-                    m.getGuild().kick(m).queue();
-                }
+        for(Member m : memberToKick) {
+            if(!permissionUtil.hasPermission(m.getUser(), PermissionLevel.STAFF)) {
+                m.getGuild().kick(m).queue();
             }
         }
     }
