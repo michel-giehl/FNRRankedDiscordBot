@@ -26,6 +26,7 @@ public class PermissionUtil {
 
     public boolean hasPermission(User user, PermissionLevel minPermissionsLevel) {
         Member m = jdaContainer.getJda().getGuildById(guildId).getMember(user);
+        if(m == null) return false;
         List<Long> memberRoles = m.getRoles().stream().map(Role::getIdLong).collect(Collectors.toList());
         switch (minPermissionsLevel) {
             case STAFF:

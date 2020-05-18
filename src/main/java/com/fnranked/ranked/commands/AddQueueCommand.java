@@ -34,10 +34,7 @@ public class AddQueueCommand implements CommandListener {
         }
         try {
             MatchType matchType = matchTypeRepository.findByName(args[0]).get();
-            System.out.println(matchType.getName());
             String region = args[1];
-            System.out.println(region);
-            System.out.println(Region.valueOf(region.toUpperCase()));
             Queue queue = new Queue();
             queue.setEnabled(true);
             queue.setInputMethodLocked(false);

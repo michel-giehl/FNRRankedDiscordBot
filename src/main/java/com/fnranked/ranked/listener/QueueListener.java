@@ -75,12 +75,10 @@ public class QueueListener extends ListenerAdapter {
         if(event.getUser().isBot()) return;
         if(event.getReaction().getReactionEmote().isEmoji() && event.getReaction().getReactionEmote().getName().equalsIgnoreCase("❌")) {
             Player p = teamUtils.getPlayer(event.getUserIdLong());
-            System.out.println("user reacted to leave queue");
             queuedTeamRepository.findAll().forEach(qt -> {
                 if(qt.getTeam().getPlayerList().contains(p)) {
                     queueRepository.findByQueueingContaining(qt).ifPresent(q -> {
                         queueChanger.leaveQueue(q, qt.getTeam());
-                        System.out.println("Team removed from queue");
                         event.getChannel().retrieveMessageById(event.getMessageId()).flatMap(Message::delete).queue();
                     });
                 }

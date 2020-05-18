@@ -9,6 +9,8 @@ import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.CreativeMapRepository;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
 import com.fnranked.ranked.util.MatchUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,8 @@ import java.util.TimerTask;
 
 @Component
 public class MatchCreator {
+
+    Logger logger = LoggerFactory.getLogger(MatchCreator.class);
 
     @Autowired
     MatchTempRepository matchTempRepository;
@@ -51,5 +55,6 @@ public class MatchCreator {
                 });
             }
         }, ttl);
+        logger.info("New " + region.name() + " " + matchType.getName() + " Match.");
     }
 }

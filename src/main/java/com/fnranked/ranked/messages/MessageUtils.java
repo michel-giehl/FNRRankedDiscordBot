@@ -139,7 +139,6 @@ public class MessageUtils {
 
     @Transactional
     public void sendMatchAccept(long matchTempId) {
-        System.out.println("=00");
         var matchTempOpt = matchTempRepository.findByIdWithMessageList(matchTempId);
         if(matchTempOpt.isEmpty()) {
             logger.warn("MatchTemp object not found.");

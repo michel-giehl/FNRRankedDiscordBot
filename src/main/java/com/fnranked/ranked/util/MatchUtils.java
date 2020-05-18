@@ -10,6 +10,8 @@ import com.fnranked.ranked.util.UserUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ import java.util.List;
 
 @Component
 public class MatchUtils {
+
+    Logger logger = LoggerFactory.getLogger(MatchUtils.class);
 
     @Autowired
     PlayerRepository playerRepository;
@@ -83,6 +87,7 @@ public class MatchUtils {
         } else {
             matchStatus = MatchStatus.FINISHED;
         }
+        logger.info("Match ended. Status:" + matchStatus.toString());
         //Calculate elo, update teams, save match
         RankedMatch rankedMatch = new RankedMatch(matchTemp, winner, matchStatus);
         if(matchStatus == MatchStatus.FINISHED)

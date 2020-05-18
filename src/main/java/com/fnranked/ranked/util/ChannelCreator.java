@@ -43,7 +43,6 @@ public class ChannelCreator {
     //to ignore "result ignored"
     @SuppressWarnings("all")
     public void createMatchChannel(MatchTemp tempMatch, Result<TextChannel> result) {
-        System.out.println("creating channel");
         var matchServerOpt = loadBalancer.getBestMatchServer();
         if (matchServerOpt.getFirst() == null) {
             logger.warn("Unable to create match channel for " + tempMatch.toString() + " due to the JDA Guild with id #" + tempMatch.getGuildId() + " being null");
@@ -51,8 +50,7 @@ public class ChannelCreator {
         }
         Guild guild = matchServerOpt.getFirst();
         tempMatch.setMatchServer(matchServerOpt.getSecond());
-        System.out.println("GUILD: " + guild.getIdLong() + " | name: " + guild.getName());
-        String matchId = (tempMatch.getStartingTime().toInstant().toEpochMilli() + "");
+        String matchId = (tempMatch.getStartingTime().toInstant().getEpochSecond() + "");
         var channelAction = guild.createTextChannel("match-" + matchId.substring(matchId.length() - 4));
         var members = userUtils.getAllMembersInTempMatch(tempMatch);
         for (Member member : members) {

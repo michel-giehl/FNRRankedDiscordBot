@@ -26,7 +26,6 @@ public class MatchMessages {
     }
 
     public MatchMessages(Message message) {
-        System.out.println("NEW MATCH MESsAGTE");
         this.messageId = message.getIdLong();
         this.channelId = message.getChannel().getIdLong();
     }
