@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="FNRBot" />
+        <module name="FnRankedBoot" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="FnRankedBoot" target="11" />
       <module name="FNRBot" target="11" />
       <module name="FNRSpring" target="11" />
     </bytecodeTargetLevel>
@@ -18,6 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="FNRBot" options="-parameters" />
       <module name="FNRSpring" options="-parameters" />
+      <module name="FnRankedBoot" options="-parameters" />
     </option>
   </component>
 </project>

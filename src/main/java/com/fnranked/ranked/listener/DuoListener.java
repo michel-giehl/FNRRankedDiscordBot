@@ -1,9 +1,10 @@
 package com.fnranked.ranked.listener;
 
-import com.fnranked.ranked.jpa.entities.Player;
-import com.fnranked.ranked.jpa.repo.TeamRepository;
-import com.fnranked.ranked.util.TeamUtils;
+import com.fnranked.ranked.jpa.repo.DuoInviteRepository;
+import com.fnranked.ranked.teams.DuoInviteUtils;
+import com.fnranked.ranked.util.UserUtils;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,24 +16,44 @@ import javax.annotation.Nonnull;
 public class DuoListener extends ListenerAdapter {
 
     @Autowired
-    TeamUtils teamUtils;
+    DuoInviteUtils duoInviteUtils;
     @Autowired
-    TeamRepository teamRepository;
+    UserUtils userUtils;
+    @Autowired
+    DuoInviteRepository duoInviteRepository;
 
     @Value("${fnranked.channels.duo}")
-    long duoSettingsChannelId;
+    public long DUO_SETTINGS_CHANNEL_ID;
+    @Value("${emote.error}")
+    private long errorEmoteId;
+    @Value("${emote.success}")
+    private long successEmoteId;
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        if(event.getAuthor().isBot()) return;
-        Player player = teamUtils.getPlayer(event.getMember().getIdLong());
-        boolean teamExists = teamRepository.findByPlayerListContainingAndSizeAndActiveIsTrue(player, 2).isPresent();
-        if(teamExists) {
-            event.getAuthor().openPrivateChannel().flatMap(pc ->
-                //TODO fancy message
-                //TODO option to leave (current) duo by reacting with :door:
-                pc.sendMessage("Error! You're already in a team")).queue();
-            return;
+        if(event.getChannel().getIdLong() == DUO_SETTINGS_CHANNEL_ID) {
+            System.out.println("message in duo channel");
+            long inviter = event.getAuthor().getIdLong();
+            //TODO UserFinder
+            long invitee = event.getMessage().getMentionedUsers().get(0).getIdLong();
+            duoInviteUtils.createDuoInvite(inviter, invitee);
         }
+    }
+
+    @Override
+    public void onPrivateMessageReactionAdd(@Nonnull PrivateMessageReactionAddEvent event) {
+        if(event.getUser().isBot()) return;
+        duoInviteRepository.findByMessageId(event.getMessageIdLong()).ifPresent(invite -> {
+            if(event.getReactionEmote().isEmoji()) {
+                duoInviteUtils.declineInvite(invite, true);
+                return;
+            }
+            long emoteId = event.getReactionEmote().getEmote().getIdLong();
+            if(emoteId == errorEmoteId) {
+                duoInviteUtils.declineInvite(invite, false);
+            } else if(emoteId == successEmoteId) {
+                duoInviteUtils.acceptInvite(invite);
+            }
+        });
     }
 }

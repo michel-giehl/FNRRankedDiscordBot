@@ -16,8 +16,7 @@ public class Player {
 
     Timestamp multiplierActiveUntil;
 
-    @OneToMany
-    List<Team> teamList;
+    boolean duoInvitesEnabled;
 
     public Player() {
 
@@ -51,11 +50,11 @@ public class Player {
         this.multiplierActiveUntil = multiplierActiveUntil;
     }
 
-    public List<Team> getTeamList() {
-        return teamList;
+    public boolean isDuoInvitesEnabled() {
+        return duoInvitesEnabled;
     }
 
-    public void setTeamList(List<Team> teamList) {
-        this.teamList = teamList;
+    public void setDuoInvitesEnabled(boolean duoInvitesEnabled) {
+        this.duoInvitesEnabled = duoInvitesEnabled;
     }
 }

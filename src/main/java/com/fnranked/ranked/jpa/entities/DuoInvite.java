@@ -17,15 +17,18 @@ public class DuoInvite {
 
     long inviteeId;
 
+    long messageId;
+
     Timestamp time;
 
     public DuoInvite() {
 
     }
 
-    public DuoInvite(long inviterId, long inviteeId) {
+    public DuoInvite(long inviterId, long inviteeId, long messageId) {
         this.inviteeId = inviteeId;
-        this.inviterId =inviterId;
+        this.inviterId = inviterId;
+        this.messageId = messageId;
         this.time = Timestamp.from(Instant.now());
     }
 

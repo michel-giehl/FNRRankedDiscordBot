@@ -12,7 +12,6 @@ import com.fnranked.ranked.util.MatchUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.internal.utils.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -57,19 +55,55 @@ public class MessageUtils {
     QueueMessageRepository queueMessageRepository;
 
     @Value("${emote.error}")
-    long errorEmoteId;
+    private long errorEmoteId;
     @Value("${emote.loading}")
-    long loadingEmoteId;
+    private long loadingEmoteId;
     @Value("${emote.success}")
-    long successEmoteId;
+    private long successEmoteId;
     @Value("${colors.fnranked}")
-    int fnrankedColor;
+    public int COLOR_FNRANKED;
     @Value("${colors.error}")
-    int errorColor;
+    public int COLOR_ERROR;
     @Value("${colors.success}")
-    int successColor;
+    public int COLOR_SUCCESS;
     @Value("${colors.loading}")
-    int loadingColor;
+    public int COLOR_LOADING;
+
+    public Emote getErrorEmote() {
+        return jdaContainer.getJda().getEmoteById(errorEmoteId);
+    }
+
+    public Emote getSuccessEmote() {
+        return jdaContainer.getJda().getEmoteById(successEmoteId);
+    }
+
+    public Emote getLoadingEmote() {
+        return jdaContainer.getJda().getEmoteById(loadingEmoteId);
+    }
+
+    public int getFnRankedColor() {
+        return COLOR_FNRANKED;
+    }
+
+    public void sendErrorMessage(long userId, String errorMessage) {
+        User user = jdaContainer.getJda().getUserById(userId);
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(COLOR_ERROR);
+        eb.setDescription(errorMessage);
+        eb.setTitle(getErrorEmote().getAsMention() + " Error!");
+        if(user == null) return;
+        user.openPrivateChannel().flatMap(pc -> pc.sendMessage(eb.build())).queue();
+    }
+
+    public void sendSuccessMessage(long userId, String successMessage) {
+        User user = jdaContainer.getJda().getUserById(userId);
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(COLOR_SUCCESS);
+        eb.setDescription(successMessage);
+        eb.setTitle(getSuccessEmote().getAsMention() + " Success!");
+        if(user == null) return;
+        user.openPrivateChannel().flatMap(pc -> pc.sendMessage(eb.build())).queue();
+    }
 
     public MessageEmbed getQueueEmbed(ArrayList<MatchType> matchTypeList, @Nullable Region region) {
         String regionString = region == null ? "" : region.toString() + " ";
@@ -109,8 +143,8 @@ public class MessageUtils {
         User user = jdaContainer.getJda().getUserById(userId);
         if(user == null) return;
         EmbedBuilder qMsg = new EmbedBuilder();
-        qMsg.setColor(loadingColor);
-        qMsg.setTitle(encodeEmote(loadingEmoteId) + " Looking for suitable opponent...");
+        qMsg.setColor(COLOR_LOADING);
+        qMsg.setTitle(getLoadingEmote().getAsMention() + " Looking for suitable opponent...");
         user.openPrivateChannel()
                 .flatMap(pc -> pc.sendMessage(qMsg.build()))
                 .flatMap(msg -> msg.addReaction("❌")).queue();
@@ -118,7 +152,7 @@ public class MessageUtils {
 
     public MessageEmbed getMatchNotAcceptedEmbed()  {
         EmbedBuilder notAccepted = new EmbedBuilder();
-        notAccepted.setColor(errorColor);
+        notAccepted.setColor(COLOR_ERROR);
         notAccepted.setDescription("The match was canceled because someone didn't accept.");
         return notAccepted.build();
     }
@@ -126,8 +160,8 @@ public class MessageUtils {
     public void sendMatchReadyMessage(MatchTemp matchTemp, TextChannel tc) {
         tc.createInvite().setMaxAge(60*60).queue(invite -> {
             EmbedBuilder readyEmbed = new EmbedBuilder();
-            readyEmbed.setColor(successColor);
-            readyEmbed.setTitle(encodeEmote(successEmoteId) + " Match ready");
+            readyEmbed.setColor(COLOR_SUCCESS);
+            readyEmbed.setTitle(getSuccessEmote().getAsMention() + " Match ready");
             readyEmbed.setDescription("Your match is ready. Click [here](" + invite.getUrl() + ") to get to your match channel");
             userUtils.getUsersInMatch(matchTemp).forEach(u -> {
                 u.openPrivateChannel()
@@ -147,7 +181,7 @@ public class MessageUtils {
         MatchTemp matchTemp = matchTempOpt.get();
         EmbedBuilder acceptEmbed = new EmbedBuilder();
         acceptEmbed.setTitle("Match found");
-        acceptEmbed.setColor(fnrankedColor);
+        acceptEmbed.setColor(COLOR_FNRANKED);
         long captainA = matchTemp.getTeamA().getCaptain().getId();
         long captainB = matchTemp.getTeamB().getCaptain().getId();
         JDA jda = jdaContainer.getJda();
@@ -178,18 +212,17 @@ public class MessageUtils {
         String desc = isWinner ?
                 "You won" : "You lost";
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(isWinner ? successColor : errorColor);
+        eb.setColor(isWinner ? COLOR_SUCCESS : COLOR_ERROR);
         eb.setTitle(String.format("%s **Match Summary** %s", emoji, emoji));
         eb.setDescription(desc);
         return eb.build();
     }
 
     public MessageEmbed getMatchCanceledEmbed(RankedMatch rankedMatch) {
-        String emoji = encodeEmote(errorEmoteId);
         String desc = "Your match was canceled";
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(errorColor);
-        eb.setTitle(String.format("%s **Match canceled** %s", emoji, emoji));
+        eb.setColor(COLOR_ERROR);
+        eb.setTitle(String.format("%s **Match canceled** %s", getErrorEmote().getAsMention(), getErrorEmote().getAsMention()));
         eb.setDescription(desc);
         return eb.build();
     }
@@ -216,8 +249,8 @@ public class MessageUtils {
         EmbedBuilder winnerSelect = new EmbedBuilder();
         winnerSelect.setColor(0xF7347A);
         winnerSelect.setTitle("**Please select the winner**");
-        String team1Emote = encodeEmote(errorEmoteId);
-        String team2Emote = encodeEmote(errorEmoteId);
+        String team1Emote = getErrorEmote().getAsMention();
+        String team2Emote = getErrorEmote().getAsMention();
         if(!isVoteError(matchTemp.getTeamAVote(), matchTemp.getTeamBVote())) {
             team1Emote = getVoteEmote(matchTemp.getTeamAVote());
             team2Emote = getVoteEmote(matchTemp.getTeamBVote());
@@ -248,16 +281,8 @@ public class MessageUtils {
         }
     }
 
-    private String encodeEmote(long id) {
-        var emote = jdaContainer.getJda().getEmoteById(id);
-        if(emote == null) {
-            return "";
-        }
-        return emote.getAsMention();
-    }
-
     private String getVoteEmote(MatchVote teamVote) {
-        return teamVote == PENDING ? encodeEmote(loadingEmoteId) : encodeEmote(successEmoteId);
+        return teamVote == PENDING ? getLoadingEmote().getAsMention() : getSuccessEmote().getAsMention();
     }
 
     private boolean isVoteError(MatchVote teamAVote, MatchVote teamBVote) {

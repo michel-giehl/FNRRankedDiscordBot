@@ -21,11 +21,11 @@ public class Team {
 
     int size;
 
-    @OneToOne
+    @ManyToOne
     @NonNull
     Player captain;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<Player> playerList;
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FNRBot.iml" filepath="$PROJECT_DIR$/FNRBot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FnRankedBoot.iml" filepath="$PROJECT_DIR$/FnRankedBoot.iml" />
     </modules>
   </component>
 </project>

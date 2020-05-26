@@ -4,10 +4,7 @@ import com.fnranked.ranked.commands.*;
 import com.fnranked.ranked.commands.commandhandler.CommandHandlerBuilder;
 import com.fnranked.ranked.commands.commandhandler.CommandHandlerListener;
 import com.fnranked.ranked.commands.commandhandler.command.CommandBuilder;
-import com.fnranked.ranked.listener.GuildMemberJoinListener;
-import com.fnranked.ranked.listener.MatchAcceptListener;
-import com.fnranked.ranked.listener.MatchVoteListener;
-import com.fnranked.ranked.listener.QueueListener;
+import com.fnranked.ranked.listener.*;
 import com.fnranked.ranked.util.JDAContainer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
@@ -54,6 +51,8 @@ public class FnRanked {
     MatchAcceptListener matchAcceptListener;
     @Autowired
     MatchVoteListener matchVoteListener;
+    @Autowired
+    DuoListener duoListener;
 
 
 
@@ -76,6 +75,7 @@ public class FnRanked {
             jda.addEventListener(guildMemberJoinListener);
             jda.addEventListener(matchAcceptListener);
             jda.addEventListener(matchVoteListener);
+            jda.addEventListener(duoListener);
 
             commandHandlerListener.init(
             new CommandHandlerBuilder(jda).setPrefix("!")

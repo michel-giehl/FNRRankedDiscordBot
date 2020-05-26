@@ -1,4 +1,4 @@
-package com.fnranked.ranked.util;
+package com.fnranked.ranked.teams;
 
 import com.fnranked.ranked.jpa.entities.Elo;
 import com.fnranked.ranked.jpa.entities.MatchType;
@@ -51,6 +51,7 @@ public class TeamUtils {
         var playerOpt = playerRepository.findById(discordId);
         final Player player;
         if(playerOpt.isPresent()) {
+            System.out.println("PLAYER ALREADY EXISTS");
             return playerOpt.get();
         } else {
             player = new Player(discordId);
@@ -66,6 +67,7 @@ public class TeamUtils {
      */
     @Transactional
     public void createTeam(long captainId, long... playerIds) {
+        System.out.println("CREATING TEAM");
         Player captain = getPlayer(captainId);
         List<Player> players = new ArrayList<>();
         players.add(captain);
@@ -74,6 +76,8 @@ public class TeamUtils {
         }
         Team team = new Team(captain, playerIds.length+1);
         team.setPlayerList(players);
-        teamRepository.save(team);
+        Team T = teamRepository.save(team);
+        System.out.println("TEAM ID: " + T.getId());
+        System.out.println("TEAM SIZE: " + T.getSize());
     }
 }

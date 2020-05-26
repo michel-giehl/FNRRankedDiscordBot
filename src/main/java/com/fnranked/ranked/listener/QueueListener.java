@@ -5,7 +5,7 @@ import com.fnranked.ranked.jpa.entities.Player;
 import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.util.UserUtils;
 import com.fnranked.ranked.jpa.repo.*;
-import com.fnranked.ranked.util.TeamUtils;
+import com.fnranked.ranked.teams.TeamUtils;
 import com.fnranked.ranked.matchmaking.QueueChanger;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
