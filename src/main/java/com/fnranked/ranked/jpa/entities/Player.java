@@ -1,5 +1,8 @@
 package com.fnranked.ranked.jpa.entities;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -18,12 +21,18 @@ public class Player {
 
     boolean duoInvitesEnabled;
 
+    @Column(columnDefinition = "TINYINT(255) default 0")
+    int banStage;
+
+    Timestamp banStageDecrease;
+
     public Player() {
 
     }
 
     public Player(long Id) {
         this.Id = Id;
+        this.banStage = 0;
     }
 
     public long getId() {

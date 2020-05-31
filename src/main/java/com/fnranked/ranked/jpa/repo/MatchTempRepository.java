@@ -19,6 +19,6 @@ public interface MatchTempRepository extends CrudRepository<MatchTemp, Long> {
     boolean existsByTeamAOrTeamB(Team a, Team b);
     @Query(value = "SELECT m FROM MatchTemp m LEFT JOIN FETCH m.matchAcceptMessages where m.Id = :id")
     Optional<MatchTemp> findByIdWithMessageList(@Param("id") long id);
-    @Query(value = "SELECT * FROM gim_fnranked_test.match_temp m LEFT JOIN gim_fnranked_test.match_temp_match_accept_messages n ON m.id = n.match_temp_id WHERE n.match_accept_messages_id = :id", nativeQuery = true)
+    @Query(value = "SELECT * FROM match_temp m LEFT JOIN match_temp_match_accept_messages n ON m.id = n.match_temp_id WHERE n.match_accept_messages_id = :id", nativeQuery = true)
     Optional<MatchTemp> findByMatchMessageId(@Param("id") long id);
 }

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -139,15 +140,39 @@ public class MessageUtils {
         });
     }
 
-    public void sendDMQueueMessage(long userId) {
-        User user = jdaContainer.getJda().getUserById(userId);
-        if(user == null) return;
-        EmbedBuilder qMsg = new EmbedBuilder();
-        qMsg.setColor(COLOR_LOADING);
-        qMsg.setTitle(getLoadingEmote().getAsMention() + " Looking for suitable opponent...");
-        user.openPrivateChannel()
-                .flatMap(pc -> pc.sendMessage(qMsg.build()))
-                .flatMap(msg -> msg.addReaction("❌")).queue();
+    public void sendDMQueueMessage(Team team) {
+        queuedTeamRepository.findByTeamWithQueueMessages(team).ifPresent(qt -> {
+            List<User> users = userUtils.getUsersInTeam(team);
+            if(users.isEmpty()) return;
+            EmbedBuilder qMsg = new EmbedBuilder();
+            qMsg.setColor(COLOR_LOADING);
+            qMsg.setTitle(getLoadingEmote().getAsMention() + " Looking for suitable opponent...");
+            for(User user : users) {
+                user.openPrivateChannel().queue(pc -> {
+                    pc.sendMessage(qMsg.build()).queue(msg -> {
+                        msg.addReaction("❌").queue();
+                        qt.getMatchMessages().add(new MatchMessages(msg));
+                        queuedTeamRepository.save(qt);
+                    });
+                });
+            }
+        });
+    }
+
+    public void deleteDMQueueMessages(Team t) {
+        queuedTeamRepository.findByTeamWithQueueMessages(t).ifPresent(team -> {
+            List<User> users = userUtils.getUsersInTeam(team.getTeam());
+            if (users.isEmpty()) return;
+            for (User user : users) {
+                user.openPrivateChannel().queue(pc -> {
+                    team.getMatchMessages().stream().filter(m -> m.getChannelId() == pc.getIdLong()).findFirst().ifPresent(qMsg -> {
+                        pc.retrieveMessageById(qMsg.getMessageId()).queue(msg -> {
+                            msg.delete().queue();
+                        });
+                    });
+                });
+            }
+        });
     }
 
     public MessageEmbed getMatchNotAcceptedEmbed()  {
@@ -188,8 +213,8 @@ public class MessageUtils {
         var users = List.of(jda.getUserById(captainA), jda.getUserById(captainB));
         AtomicBoolean a = new AtomicBoolean(false);
         for(User u : users) {
-            //TODO user elo
             u.openPrivateChannel().queue(pc -> {
+                // Get elo for both teams
                 Team userTeam = matchUtils.getTeamByUserId(u.getIdLong(), matchTemp);
                 double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType()).getEloRating();
                 Team oppTeam = matchTemp.getTeamA().equals(userTeam) ? matchTemp.getTeamB() : matchTemp.getTeamA();
@@ -209,8 +234,17 @@ public class MessageUtils {
 
     public MessageEmbed getMatchHistoryEmbed(RankedMatch rankedMatch, boolean isWinner) {
         String emoji = rankedMatch.getMatchType().getDisplayEmote();
-        String desc = isWinner ?
-                "You won" : "You lost";
+
+        Team loserTeam = rankedMatch.getTeamA().equals(rankedMatch.getWinner()) ? rankedMatch.getTeamB() : rankedMatch.getTeamA();
+        Team winnerTeam = rankedMatch.getWinner();
+
+        boolean isTeamA = isWinner == rankedMatch.getTeamA().equals(winnerTeam);
+        double eloChange = isTeamA ? rankedMatch.getTeamAEloChange() : rankedMatch.getTeamBEloChange();
+
+        String desc = String.format(":trophy: `%s`\n:skull_crossbones: `%s`", userUtils.getUsernamesInTeam(winnerTeam), userUtils.getUsernamesInTeam(loserTeam));
+
+        desc += String.format("\n\n**Elo change:** ```diff\n%+.2f```", eloChange);
+
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(isWinner ? COLOR_SUCCESS : COLOR_ERROR);
         eb.setTitle(String.format("%s **Match Summary** %s", emoji, emoji));

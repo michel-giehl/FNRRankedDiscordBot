@@ -44,6 +44,11 @@ public class Team {
         this.active = true;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Team && this.Id == ((Team)obj).getId();
+    }
+
     public long getId() {
         return Id;
     }

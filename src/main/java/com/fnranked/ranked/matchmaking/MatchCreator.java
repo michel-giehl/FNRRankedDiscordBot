@@ -1,6 +1,7 @@
 package com.fnranked.ranked.matchmaking;
 
 import com.fnranked.ranked.api.entities.Region;
+import com.fnranked.ranked.jpa.entities.QueuedTeam;
 import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.util.ChannelCreator;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
@@ -44,6 +45,8 @@ public class MatchCreator {
         var tmpMatch = new MatchTemp(matchType, map.get(), teamA, teamB);
         tmpMatch.setRegion(region);
         messageUtils.sendMatchAccept(matchTempRepository.save(tmpMatch).getId());
+        messageUtils.deleteDMQueueMessages(teamA);
+        messageUtils.deleteDMQueueMessages(teamB);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {

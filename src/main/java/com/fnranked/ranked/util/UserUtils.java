@@ -4,6 +4,7 @@ import com.fnranked.ranked.api.entities.PermissionLevel;
 import com.fnranked.ranked.api.entities.Result;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
 import com.fnranked.ranked.jpa.entities.Player;
+import com.fnranked.ranked.jpa.entities.Team;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -46,11 +47,9 @@ public class UserUtils {
         List<Member> memberList = new ArrayList<>();
         Guild guild = jdaContainer.getJda().getGuildById(matchTemp.getMatchServer().getId());
         if(guild == null) return memberList;
-        var teamAPlayers = matchTemp.getTeamA().getPlayerList();
-        var teamBPlayers = matchTemp.getTeamB().getPlayerList();
-        var userIds = Stream.concat(teamAPlayers.stream(), teamBPlayers.stream()).map(Player::getId).collect(Collectors.toList());
-        for(Long uId : userIds) {
-            Member m = guild.getMemberById(uId);
+        List<User> users = getUsersInMatch(matchTemp);
+        for(User user : users) {
+            Member m = guild.getMember(user);
             if(m != null)
                 memberList.add(m);
         }
@@ -59,15 +58,26 @@ public class UserUtils {
 
     public List<User> getUsersInMatch(MatchTemp matchTemp) {
         List<User> userList = new ArrayList<>();
-        var teamAPlayers = matchTemp.getTeamA().getPlayerList();
-        var teamBPlayers = matchTemp.getTeamB().getPlayerList();
-        var userIds = Stream.concat(teamAPlayers.stream(), teamBPlayers.stream()).map(Player::getId).collect(Collectors.toList());
-        for(Long uId : userIds) {
-            User u = jdaContainer.getJda().getUserById(uId);
+        userList.addAll(getUsersInTeam(matchTemp.getTeamA()));
+        userList.addAll(getUsersInTeam(matchTemp.getTeamB()));
+        return userList;
+    }
+
+    public List<User> getUsersInTeam(Team team) {
+        List<User> userList = new ArrayList<>();
+        var players = team.getPlayerList();
+        for(Player player : players) {
+            long userId = player.getId();
+            User u = jdaContainer.getJda().getUserById(userId);
             if(u != null)
                 userList.add(u);
         }
         return userList;
+    }
+
+    public String getUsernamesInTeam(Team team) {
+        List<User> users = getUsersInTeam(team);
+        return users.stream().map(User::getName).collect(Collectors.joining(", "));
     }
 
     public void kickMembersAfterMatch(MatchTemp matchtemp) {

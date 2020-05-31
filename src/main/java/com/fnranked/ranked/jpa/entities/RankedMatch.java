@@ -77,6 +77,11 @@ public class RankedMatch {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RankedMatch && this.Id == ((RankedMatch)obj).getId();
+    }
+
     public long getId() {
         return Id;
     }
