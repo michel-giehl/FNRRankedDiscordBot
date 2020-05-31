@@ -1,8 +1,8 @@
 package com.fnranked.ranked.teams;
 
-import com.fnranked.ranked.api.entities.Result;
 import com.fnranked.ranked.jpa.entities.DuoInvite;
 import com.fnranked.ranked.jpa.repo.DuoInviteRepository;
+import com.fnranked.ranked.jpa.repo.TeamRepository;
 import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.util.JDAContainer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @Component
 @EnableScheduling
@@ -33,6 +30,8 @@ public class DuoInviteUtils {
     MessageUtils messageUtils;
     @Autowired
     JDAContainer jdaContainer;
+    @Autowired
+    TeamRepository teamRepository;
 
     public final long INVITE_TTL = 30_000L;
 
@@ -59,7 +58,9 @@ public class DuoInviteUtils {
      */
     @Transactional
     public boolean canCreateDuoInvite(long inviterId, long inviteeId) {
-        return duoInviteRepository.findByInviteeId(inviteeId).isEmpty() &&
+        return teamRepository.findByPlayerListContainingAndSizeAndActiveIsTrue(teamUtils.getPlayer(inviteeId), 2).isEmpty() &&
+                teamRepository.findByPlayerListContainingAndSizeAndActiveIsTrue(teamUtils.getPlayer(inviteeId), 2).isEmpty() &&
+                duoInviteRepository.findByInviteeId(inviteeId).isEmpty() &&
                 duoInviteRepository.findByInviterId(inviterId).isEmpty() &&
                 duoInviteRepository.findByInviterId(inviteeId).isEmpty() &&
                 duoInviteRepository.findByInviteeId(inviterId).isEmpty();

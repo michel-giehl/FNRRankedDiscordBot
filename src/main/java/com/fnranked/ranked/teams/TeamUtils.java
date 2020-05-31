@@ -8,6 +8,7 @@ import com.fnranked.ranked.jpa.repo.EloRepository;
 import com.fnranked.ranked.jpa.repo.PlayerRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,20 @@ public class TeamUtils {
         team.setEloList(List.of(elo));
         teamRepository.save(team);
         return team;
+    }
+
+    @Transactional
+    @Nullable
+    public Team getTeam(MatchType matchType, long discordId) {
+        int teamSize = matchType.getTeamSize();
+        //Solo needs a special case because a "solo team" is not manually created by the player
+        //meaning the system needs to create a solo team if it doesn't exist.
+        //A team with size > 1 needs to be created manually created, meaning we can just return null if it doesn't exist
+        if(teamSize == 1) {
+            return getSolo(matchType, discordId);
+        }
+        Player player = getPlayer(discordId);
+        return teamRepository.findByPlayerListContainingAndSizeAndActiveIsTrue(player, teamSize).orElse(null);
     }
 
     @Transactional

@@ -36,7 +36,13 @@ public class DuoListener extends ListenerAdapter {
             long inviter = event.getAuthor().getIdLong();
             //TODO UserFinder
             long invitee = event.getMessage().getMentionedUsers().get(0).getIdLong();
-            duoInviteUtils.createDuoInvite(inviter, invitee);
+            if(duoInviteUtils.canCreateDuoInvite(inviter, invitee)) {
+                duoInviteUtils.createDuoInvite(inviter, invitee);
+            } else {
+                event.getAuthor().openPrivateChannel().flatMap(pc ->
+                    pc.sendMessage("<:PepeHands:712672036178362418> You can't create a duo because someone already has a duo partner or a pending invite.")
+                ).queue();
+            }
         }
     }
 
