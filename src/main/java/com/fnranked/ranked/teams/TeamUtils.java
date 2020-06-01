@@ -12,6 +12,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +67,6 @@ public class TeamUtils {
         var playerOpt = playerRepository.findById(discordId);
         final Player player;
         if(playerOpt.isPresent()) {
-            System.out.println("PLAYER ALREADY EXISTS");
             return playerOpt.get();
         } else {
             player = new Player(discordId);
@@ -81,8 +81,7 @@ public class TeamUtils {
      * @param playerIds collection of players
      */
     @Transactional
-    public void createTeam(long captainId, long... playerIds) {
-        System.out.println("CREATING TEAM");
+    public Team createTeam(long captainId, long... playerIds) {
         Player captain = getPlayer(captainId);
         List<Player> players = new ArrayList<>();
         players.add(captain);
@@ -91,8 +90,17 @@ public class TeamUtils {
         }
         Team team = new Team(captain, playerIds.length+1);
         team.setPlayerList(players);
-        Team T = teamRepository.save(team);
-        System.out.println("TEAM ID: " + T.getId());
-        System.out.println("TEAM SIZE: " + T.getSize());
+        return teamRepository.save(team);
+    }
+
+    @Transactional
+    public Team createDuo(long captainId, long plebId, Timestamp created, boolean active) {
+        Player captain = getPlayer(captainId);
+        Player pleb = getPlayer(plebId);
+        Team team = new Team(captain, 2);
+        team.setActive(active);
+        team.setPlayerList(List.of(captain, pleb));
+        team.setTimeCreated(created);
+        return teamRepository.save(team);
     }
 }

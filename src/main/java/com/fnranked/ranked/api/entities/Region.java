@@ -8,6 +8,8 @@ public enum  Region {
     NA_EAST("NAE"),
     OCEANIA("OCE"),
     ASIA("ASIA"),
+    BRAZIL("BR"),
+    STAFF("STAFF"),
     MIDDLE_EAST("ME");
 
     private final String region;
@@ -17,7 +19,25 @@ public enum  Region {
     }
 
     public static Region parseRegion(String region) {
-        return Arrays.stream(Region.values()).filter(r -> r.toString().equalsIgnoreCase(region)).findFirst().get();
+        switch (region.toUpperCase()) {
+            case "EU":
+                return EUROPE;
+            case "NAE":
+                return NA_EAST;
+            case "NAW":
+                return NA_WEST;
+            case "OCE":
+                return OCEANIA;
+            case "ASIA":
+                return ASIA;
+            case "BR":
+                return BRAZIL;
+            case "ME":
+                return MIDDLE_EAST;
+            default:
+                return STAFF;
+        }
+        //return Arrays.stream(Region.values()).filter(r -> r.toString().equalsIgnoreCase(region)).findFirst().get();
     }
 
 

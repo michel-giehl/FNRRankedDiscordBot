@@ -3,6 +3,7 @@ package com.fnranked.ranked.listener;
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.jpa.entities.Player;
 import com.fnranked.ranked.messages.MessageUtils;
+import com.fnranked.ranked.util.BanUtils;
 import com.fnranked.ranked.util.UserUtils;
 import com.fnranked.ranked.jpa.repo.*;
 import com.fnranked.ranked.teams.TeamUtils;
@@ -38,18 +39,24 @@ public class QueueListener extends ListenerAdapter {
     UserUtils userUtils;
     @Autowired
     QueuedTeamRepository queuedTeamRepository;
+    @Autowired
+    BanUtils banUtils;
 
     @Transactional
     @Override
     public void onMessageReactionAdd(@Nonnull MessageReactionAddEvent event) {
         if(event.getUser().isBot()) return;
         queueMessageRepository.findByQueueMessageId(event.getMessageIdLong()).ifPresent(qMsg -> {
-            //TODO use util class to get rid of getAsCodepoints()
             matchTypeRepository.findByDisplayEmote(event.getReactionEmote().getAsCodepoints()).ifPresent(mType -> {
                 userUtils.retrieveRegistrationData(event.getUserId(), data -> {
                     Region region = Region.parseRegion(data.getString("region"));
                     queueRepository.findByMatchTypeAndRegion(mType, region).ifPresent(q -> {
                         var team = teamUtils.getTeam(mType, event.getUserIdLong());
+                        if(banUtils.isBanned(team)) {
+                            //TODO send detailed ban information
+                            event.getUser().openPrivateChannel().flatMap(pc -> pc.sendMessage("You can't join the queue because someone in your team is temporarily banned from matchmaking")).queue();
+                            return;
+                        }
                         if(queueChanger.joinQueue(q, team)) {
                             messageUtils.sendDMQueueMessage(team);
                             //delete message if queue in DMs and delete queue message

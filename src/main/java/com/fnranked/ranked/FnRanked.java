@@ -5,6 +5,7 @@ import com.fnranked.ranked.commands.commandhandler.CommandHandlerBuilder;
 import com.fnranked.ranked.commands.commandhandler.CommandHandlerListener;
 import com.fnranked.ranked.commands.commandhandler.command.CommandBuilder;
 import com.fnranked.ranked.listener.*;
+import com.fnranked.ranked.util.ImportOldMatches;
 import com.fnranked.ranked.util.JDAContainer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
@@ -54,12 +55,18 @@ public class FnRanked {
     @Autowired
     DuoListener duoListener;
 
+    @Autowired
+    ImportOldMatches importOldMatches;
+
 
 
     @Value("${bot.token}")
     String token;
 
     public void initDiscordSession() {
+        System.out.println("IMPORTING OLD MATCHES");
+        importOldMatches.importMatches();
+        /*
         JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
         jdaBuilder.setToken(token);
         jdaBuilder.setAutoReconnect(true);
@@ -88,6 +95,6 @@ public class FnRanked {
             e1.printStackTrace();
         }
         //Ignore DM context exceptions
-        RestAction.setDefaultFailure(new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER));
+        RestAction.setDefaultFailure(new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER)); */
     }
 }

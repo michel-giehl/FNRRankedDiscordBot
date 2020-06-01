@@ -3,6 +3,8 @@ package com.fnranked.ranked.jpa.entities;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -20,6 +22,8 @@ public class Team {
     boolean active;
 
     int size;
+
+    Timestamp timeCreated;
 
     @ManyToOne
     @NonNull
@@ -42,6 +46,7 @@ public class Team {
         this.captain = captain;
         this.size = teamSize;
         this.active = true;
+        this.timeCreated = Timestamp.from(Instant.now());
     }
 
     @Override
@@ -104,5 +109,13 @@ public class Team {
 
     public void setEloList(List<Elo> eloList) {
         this.eloList = eloList;
+    }
+
+    public Timestamp getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(Timestamp timeCreated) {
+        this.timeCreated = timeCreated;
     }
 }

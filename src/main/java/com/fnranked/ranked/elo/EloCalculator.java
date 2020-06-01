@@ -8,6 +8,7 @@ import com.fnranked.ranked.jpa.repo.RankedMatchRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class EloCalculator {
@@ -56,6 +57,7 @@ public class EloCalculator {
         return new double[] { rating1, rating2 };
     }
 
+    @Transactional
     public RankedMatch updateRatings(RankedMatch rankedMatch) {
         Team teamAWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamA().getId()).get();
         Team teamBWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamB().getId()).get();
