@@ -9,7 +9,7 @@ import java.util.List;
 public class Queue {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long Id;
 
     @OneToOne

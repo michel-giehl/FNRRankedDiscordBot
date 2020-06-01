@@ -3,17 +3,14 @@ package com.fnranked.ranked.jpa.entities;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 public class MatchmakingBan {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long Id;
 
     @OneToOne

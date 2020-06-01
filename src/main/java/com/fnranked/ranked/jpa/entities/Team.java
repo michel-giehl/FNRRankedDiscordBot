@@ -14,7 +14,7 @@ import java.util.List;
 public class Team {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long Id;
 
     boolean active;

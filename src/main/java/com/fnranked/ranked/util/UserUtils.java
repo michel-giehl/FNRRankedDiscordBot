@@ -108,4 +108,8 @@ public class UserUtils {
             }
         });
     }
+
+    public void updateRank() {
+
+    }
 }

@@ -1,13 +1,9 @@
 package com.fnranked.ranked.jpa.entities;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 public class Player {
