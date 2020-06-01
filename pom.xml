@@ -116,6 +116,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -125,6 +133,8 @@
                 <targetPath>${project.build.outputDirectory}</targetPath>
                 <includes>
                     <include>application.properties</include>
+                    <include>duo.json</include>
+                    <include>match_history.json</include>
                 </includes>
             </resource>
         </resources>

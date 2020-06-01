@@ -37,6 +37,10 @@ public class MatchTemp {
     @OneToOne
     Team teamB;
 
+    int teamAScore;
+
+    int teamBScore;
+
     MatchVote teamAVote;
 
     MatchVote teamBVote;
@@ -53,6 +57,12 @@ public class MatchTemp {
     MatchServer matchServer;
 
     long voteMessageId;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    List<FortnitePresence> matchPresences;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    List<FortnitePresence> currentRoundPresences;
 
     @OneToMany(cascade = CascadeType.ALL)
     List<MatchMessages> matchAcceptMessages;
@@ -211,5 +221,37 @@ public class MatchTemp {
 
     public List<MatchMessages> getMatchAcceptMessages() {
         return matchAcceptMessages;
+    }
+
+    public int getTeamAScore() {
+        return teamAScore;
+    }
+
+    public void setTeamAScore(int teamAScore) {
+        this.teamAScore = teamAScore;
+    }
+
+    public int getTeamBScore() {
+        return teamBScore;
+    }
+
+    public void setTeamBScore(int teamBScore) {
+        this.teamBScore = teamBScore;
+    }
+
+    public List<FortnitePresence> getMatchPresences() {
+        return matchPresences;
+    }
+
+    public void setMatchPresences(List<FortnitePresence> matchPresences) {
+        this.matchPresences = matchPresences;
+    }
+
+    public List<FortnitePresence> getCurrentRoundPresences() {
+        return currentRoundPresences;
+    }
+
+    public void setCurrentRoundPresences(List<FortnitePresence> currentRoundPresences) {
+        this.currentRoundPresences = currentRoundPresences;
     }
 }

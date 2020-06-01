@@ -51,7 +51,7 @@ public class QueueListener extends ListenerAdapter {
                     queueRepository.findByMatchTypeAndRegion(mType, region).ifPresent(q -> {
                         var team = teamUtils.getTeam(mType, event.getUserIdLong());
                         if(queueChanger.joinQueue(q, team)) {
-                            messageUtils.sendDMQueueMessage(event.getUserIdLong());
+                            messageUtils.sendDMQueueMessage(team);
                             //delete message if queue in DMs and delete queue message
                             if(qMsg.isDMQueue()) {
                                 event.getChannel().retrieveMessageById(event.getMessageIdLong()).flatMap(Message::delete).queue();

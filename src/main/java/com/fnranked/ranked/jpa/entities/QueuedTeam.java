@@ -40,4 +40,24 @@ public class QueuedTeam {
     public Timestamp getTimeJoined() {
         return timeJoined;
     }
+
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public void setTimeJoined(Timestamp timeJoined) {
+        this.timeJoined = timeJoined;
+    }
+
+    public List<MatchMessages> getMatchMessages() {
+        return matchMessages;
+    }
+
+    public void setMatchMessages(List<MatchMessages> matchMessages) {
+        this.matchMessages = matchMessages;
+    }
 }

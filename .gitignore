@@ -4,6 +4,6 @@
 /.idea/
 .idea/
 *.iml
-
-# Project exclude paths
 /classes/
+/src/main/resources/duo.json
+/src/main/resources/match_history.json

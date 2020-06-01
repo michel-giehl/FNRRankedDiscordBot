@@ -2,17 +2,14 @@ package com.fnranked.ranked.jpa.entities;
 
 import net.dv8tion.jda.internal.utils.EncodingUtil;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class MatchType {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
     int teamSize;

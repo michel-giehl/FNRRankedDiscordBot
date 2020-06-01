@@ -5,9 +5,7 @@ import com.fnranked.ranked.api.entities.Region;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 /**
@@ -20,6 +18,7 @@ import java.time.Instant;
 public class RankedMatch {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long Id;
 
     long guildId;
@@ -75,6 +74,23 @@ public class RankedMatch {
         if(winner != null) {
             this.winner = winner;
         }
+    }
+
+
+    public RankedMatch(Team winner, Team loser, MatchType matchType, Region region, Instant time) {
+        this.winner = winner;
+        this.teamA = winner;
+        this.teamB = loser;
+        this.matchType = matchType;
+        this.region = region;
+        this.endingTime = Timestamp.from(time);
+        this.startingTime = this.endingTime;
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RankedMatch && this.Id == ((RankedMatch)obj).getId();
     }
 
     public long getId() {
