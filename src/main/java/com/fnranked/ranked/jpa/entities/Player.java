@@ -2,12 +2,11 @@ package com.fnranked.ranked.jpa.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
-public class Player {
+public class Player implements Serializable {
 
     @Id
     long Id;
