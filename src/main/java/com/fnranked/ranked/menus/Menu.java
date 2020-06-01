@@ -8,9 +8,9 @@ import java.util.Collection;
 
 public interface Menu {
 
-    public String getDisplayName();
+    String getDisplayName();
 
-    public MessageEmbed getEmbed(User user);
+    MessageEmbed getEmbed(User user);
 
     Collection<Emote> getOptionEmotes(User user);
 }

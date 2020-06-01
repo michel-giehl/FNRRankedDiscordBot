@@ -5,8 +5,8 @@ import com.fnranked.ranked.commands.commandhandler.CommandHandlerBuilder;
 import com.fnranked.ranked.commands.commandhandler.CommandHandlerListener;
 import com.fnranked.ranked.commands.commandhandler.command.CommandBuilder;
 import com.fnranked.ranked.listener.*;
-import com.fnranked.ranked.util.ImportOldMatches;
 import com.fnranked.ranked.util.JDAContainer;
+import com.fnranked.ranked.util.PartyChannel;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -43,6 +43,8 @@ public class FnRanked {
     WinnerCommand winnerCommand;
     @Autowired
     CancelCommand cancelCommand;
+    @Autowired
+    PartyChannel partyChannel;
 
     @Autowired
     QueueListener queueListener;
@@ -53,20 +55,14 @@ public class FnRanked {
     @Autowired
     MatchVoteListener matchVoteListener;
     @Autowired
-    DuoListener duoListener;
-
-    @Autowired
-    ImportOldMatches importOldMatches;
+    PartyListener partyListener;
 
 
 
     @Value("${bot.token}")
     String token;
 
-    public void initDiscordSession() {
-        System.out.println("IMPORTING OLD MATCHES");
-        importOldMatches.importMatches();
-        /*
+    public void initDiscordSession() throws InterruptedException {
         JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
         jdaBuilder.setToken(token);
         jdaBuilder.setAutoReconnect(true);
@@ -82,19 +78,21 @@ public class FnRanked {
             jda.addEventListener(guildMemberJoinListener);
             jda.addEventListener(matchAcceptListener);
             jda.addEventListener(matchVoteListener);
-            jda.addEventListener(duoListener);
+            jda.addEventListener(partyListener);
 
             commandHandlerListener.init(
-            new CommandHandlerBuilder(jda).setPrefix("!")
-                    .addCommand(new CommandBuilder("addmatchtype", addMatchTypeCommand).build())
-                    .addCommand(new CommandBuilder("addqueue", addQueueCommand).build())
-                    .addCommand(new CommandBuilder("winner", winnerCommand).build())
-                    .addCommand(new CommandBuilder("cancel", cancelCommand).build())
-                    .addCommand(new CommandBuilder("sendqueuemessage", sendQueueMessageCommand).build()));
+                    new CommandHandlerBuilder(jda).setPrefix("!")
+                            .addCommand(new CommandBuilder("addmatchtype", addMatchTypeCommand).build())
+                            .addCommand(new CommandBuilder("addqueue", addQueueCommand).build())
+                            .addCommand(new CommandBuilder("winner", winnerCommand).build())
+                            .addCommand(new CommandBuilder("cancel", cancelCommand).build())
+                            .addCommand(new CommandBuilder("sendqueuemessage", sendQueueMessageCommand).build()));
         } catch (LoginException e1) {
             e1.printStackTrace();
         }
+        Thread.sleep(60_000L);
+        partyChannel.initPartyChannel();
         //Ignore DM context exceptions
-        RestAction.setDefaultFailure(new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER)); */
+        RestAction.setDefaultFailure(new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER));
     }
 }

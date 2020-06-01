@@ -3,15 +3,16 @@ package com.fnranked.ranked.jpa.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
 import java.time.Instant;
 
 @Entity
-public class DuoInvite {
+public class PartyInvite {
 
     @Id
     @GeneratedValue
-    long Id;
+    long id;
 
     long inviterId;
 
@@ -21,15 +22,23 @@ public class DuoInvite {
 
     Timestamp time;
 
-    public DuoInvite() {
+    @ManyToOne
+    Party party;
+
+    public PartyInvite() {
 
     }
 
-    public DuoInvite(long inviterId, long inviteeId, long messageId) {
+    public PartyInvite(Party party, long inviterId, long inviteeId, long messageId) {
+        this.party = party;
         this.inviteeId = inviteeId;
         this.inviterId = inviterId;
         this.messageId = messageId;
         this.time = Timestamp.from(Instant.now());
+    }
+
+    public Party getParty() {
+        return party;
     }
 
     public long getInviterId() {
@@ -45,6 +54,6 @@ public class DuoInvite {
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 }
