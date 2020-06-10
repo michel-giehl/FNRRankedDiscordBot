@@ -58,23 +58,34 @@ public class ImportOldMatches {
 
     @Transactional
     public void importMatches() {
+        loadDuoData();
         JSONArray matches = getMatchData();
         List<MatchType> matchTypeList = (ArrayList<MatchType>)matchTypeRepository.findAll();
         for(int i = 0; i < matches.length(); i++) {
-            if (i % 50 == 0) {
-                System.out.println("Processing match " + i + "/" + matches.length());
-            }
-            JSONObject match = matches.getJSONObject(i);
-            long winnerId = Long.parseLong(match.getString("winner"));
-            long loserId = Long.parseLong(match.getString("loser"));
-            long time = Long.parseLong(match.getString("match_id"));
-            Region region = Region.parseRegion(match.getString("region"));
-            MatchType matchType = matchTypeList.stream().filter(m -> m.getName().equals(match.getString("match_type"))).findFirst().get();
-            Team teamA = getTeam(matchType, winnerId);
-            Team teamB = getTeam(matchType, loserId);
-            if(teamA != null && teamB != null) {
-                RankedMatch rankedMatch = new RankedMatch(teamA, teamB, matchType, region, Instant.ofEpochMilli(time));
-                eloCalculator.updateRatings(rankedMatchRepository.save(rankedMatch));
+            try {
+                if (i % 50 == 0) {
+                    System.out.println("Processing match " + i + "/" + matches.length());
+                }
+                JSONObject match = matches.getJSONObject(i);
+                long winnerId = Long.parseLong(match.getString("winner"));
+                long loserId = Long.parseLong(match.getString("loser"));
+                String timestamp = match.getString("match_id");
+                long time;
+                if (timestamp.startsWith("k")) {
+                    time = Long.parseLong(timestamp, 36);
+                } else {
+                    time = Long.parseLong(timestamp);
+                }
+                Region region = Region.parseRegion(match.getString("region"));
+                MatchType matchType = matchTypeList.stream().filter(m -> m.getName().equals(match.getString("match_type"))).findFirst().get();
+                Team teamA = getTeam(matchType, winnerId);
+                Team teamB = getTeam(matchType, loserId);
+                if (teamA != null && teamB != null) {
+                    RankedMatch rankedMatch = new RankedMatch(teamA, teamB, matchType, region, Instant.ofEpochMilli(time));
+                    rankedMatchRepository.save(eloCalculator.updateRatings(rankedMatch));
+                }
+            }catch(Exception e) {
+                System.out.println("FAILED TO IMPORT A MATCH. SKIPPING");
             }
         }
     }
@@ -83,13 +94,13 @@ public class ImportOldMatches {
         if(matchType.getTeamSize() == 1) {
             return teamUtils.getTeam(matchType, id);
         }
-        if(duos.containsKey(id)) {
-            var duo = duos.get(id);
+        if(duos.containsKey((int)id)) {
+            var duo = duos.get((int)id);
             long captain = duo.getA();
             long pleb = duo.getB();
             Timestamp created = Timestamp.from(duo.getC());
             boolean active = duo.getD();
-            Team team = teamUtils.getTeam(matchType, duo.getA());
+            Team team = teamUtils.getOldTeam(matchType, duo.getA(), duo.getB());
             if(team == null) {
                 team = teamUtils.createDuo(captain, pleb, created, active);
             }

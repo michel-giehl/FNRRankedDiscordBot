@@ -63,6 +63,12 @@ public class TeamUtils {
     }
 
     @Transactional
+    @Nullable
+    public Team getOldTeam(MatchType matchType, long playerA, long playerB) {
+        return teamRepository.findByCaptainAndPlayerListContaining(getPlayer(playerA), getPlayer(playerB)).orElse(null);
+    }
+
+    @Transactional
     public Player getPlayer(long discordId) {
         var playerOpt = playerRepository.findById(discordId);
         final Player player;

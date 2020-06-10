@@ -19,6 +19,8 @@ public class EloCalculator {
     TeamRepository teamRepository;
     @Autowired
     RankedMatchRepository rankedMatchRepository;
+    @Autowired
+    EloUtils eloUtils;
 
     //amount of elo that will be put in the pool
     private final int c = 60;
@@ -59,10 +61,8 @@ public class EloCalculator {
 
     @Transactional
     public RankedMatch updateRatings(RankedMatch rankedMatch) {
-        Team teamAWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamA().getId()).get();
-        Team teamBWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamB().getId()).get();
-        Elo teamAElo = teamAWithElo.getEloList().stream().filter(e -> e.getMatchType().equals(rankedMatch.getMatchType())).findFirst().get();
-        Elo teamBElo = teamBWithElo.getEloList().stream().filter(e -> e.getMatchType().equals(rankedMatch.getMatchType())).findFirst().get();
+        Elo teamAElo = eloUtils.getTeamElo(rankedMatch.getTeamA().getId(), rankedMatch.getMatchType());
+        Elo teamBElo = eloUtils.getTeamElo(rankedMatch.getTeamB().getId(), rankedMatch.getMatchType());
         double teamARating = teamAElo.getEloRating();
         double teamBRating = teamBElo.getEloRating();
         boolean teamAWon = rankedMatch.getWinner().equals(rankedMatch.getTeamA());
