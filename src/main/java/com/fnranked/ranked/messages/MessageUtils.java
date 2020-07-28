@@ -3,12 +3,12 @@ package com.fnranked.ranked.messages;
 import com.fnranked.ranked.api.entities.MatchVote;
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.api.entities.TeamSize;
+import com.fnranked.ranked.elo.EloUtils;
 import com.fnranked.ranked.jpa.entities.*;
 import com.fnranked.ranked.jpa.repo.*;
 import com.fnranked.ranked.util.JDAContainer;
-import com.fnranked.ranked.util.UserUtils;
-import com.fnranked.ranked.elo.EloUtils;
 import com.fnranked.ranked.util.MatchUtils;
+import com.fnranked.ranked.util.UserUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -69,6 +68,8 @@ public class MessageUtils {
     public int COLOR_SUCCESS;
     @Value("${colors.loading}")
     public int COLOR_LOADING;
+    @Value("${fnranked.embed.footer}")
+    public String fnrankedFooter;
 
     public Emote getErrorEmote() {
         return jdaContainer.getJda().getEmoteById(errorEmoteId);
@@ -86,13 +87,19 @@ public class MessageUtils {
         return COLOR_FNRANKED;
     }
 
+    public void sendMessageEmbed(long userId, MessageEmbed messageEmbed) {
+        User user = jdaContainer.getJda().getUserById(userId);
+        if (user == null) return;
+        user.openPrivateChannel().flatMap(pc -> pc.sendMessage(messageEmbed)).queue();
+    }
+
     public void sendErrorMessage(long userId, String errorMessage) {
         User user = jdaContainer.getJda().getUserById(userId);
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(COLOR_ERROR);
         eb.setDescription(errorMessage);
         eb.setTitle(getErrorEmote().getAsMention() + " Error!");
-        if(user == null) return;
+        if (user == null) return;
         user.openPrivateChannel().flatMap(pc -> pc.sendMessage(eb.build())).queue();
     }
 

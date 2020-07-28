@@ -44,14 +44,58 @@ public class PartyBuilder {
         return null;
     }
 
-    public boolean isUserInviteable(Long user) {
-        Optional<Player> playerOptional = playerRepository.findById(user);
-        if (playerOptional.isPresent()) {
-            return playerOptional.get().isDuoInvitesEnabled();
-        } else {
-            logger.error(String.format("User <@%s> was attempted to be invited to a party, but was not found as a registered player.", user));
-            return false;
+    public void attemptKick(long kickerId, long toKickId) {
+        Party party = getPartyWithLeader(kickerId);
+        if (party != null) {
+            boolean success = false;
+            Optional<Player> playerOptional = playerRepository.findById(toKickId);
+            if (playerOptional.isPresent() && party.getPlayerList().contains(playerOptional.get()) && party.getId() != toKickId) {
+                party.removePlayer(playerOptional.get());
+                partyRepository.save(party);
+                success = true;
+            } else {
+                messageUtils.sendErrorMessage(kickerId, "You are not able to kick this user as they are not in your party.");
+            }
+            if (success) {
+                messageUtils.sendSuccessMessage(kickerId, "Player removed from your party!");
+            } else {
+                messageUtils.sendErrorMessage(kickerId, "<:PepeHands:712672036178362418> You can't kick this user.");
+            }
         }
     }
 
+    public boolean isUserInviteable(Long user, Party party) {
+        Optional<Player> playerOptional = playerRepository.findById(user);
+        if (playerOptional.isPresent()) {
+            if (!party.getPlayerList().contains(playerOptional.get())) {
+                return playerOptional.get().isDuoInvitesEnabled();
+            }
+        }
+        logger.error(String.format("User <@%s> was attempted to be invited to a party, but was not found as a registered player.", user));
+        return false;
+    }
+
+    public void attemptPromote(long promoterId, long toPromoteId) {
+        Party party = getPartyWithLeader(promoterId);
+        if (party != null) {
+            Optional<Player> playerOptional = playerRepository.findById(toPromoteId);
+            if (playerOptional.isPresent() && party.getPlayerList().contains(playerOptional.get()) && party.getId() == promoterId) {
+                partyRepository.delete(party);
+                Party newParty = new Party(playerOptional.get());
+                party.getPlayerList().forEach(newParty::addPlayer);
+                messageUtils.sendSuccessMessage(promoterId, "Player promoted to party leader!");
+            } else {
+                messageUtils.sendErrorMessage(promoterId, "<:PepeHands:712672036178362418> You are not able to promote this user as they are not in your party.");
+            }
+        }
+    }
+
+    private Party getPartyWithLeader(long playerId) {
+        Optional<Party> partyOptional = partyRepository.findById(playerId);
+        if (partyOptional.isEmpty()) {
+            messageUtils.sendErrorMessage(playerId, "You are not the leader of a party.");
+            return null;
+        }
+        return partyOptional.get();
+    }
 }

@@ -2,11 +2,12 @@ package com.fnranked.ranked.listener;
 
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.jpa.entities.Player;
-import com.fnranked.ranked.messages.MessageUtils;
-import com.fnranked.ranked.util.UserUtils;
+import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.*;
-import com.fnranked.ranked.teams.TeamUtils;
 import com.fnranked.ranked.matchmaking.QueueChanger;
+import com.fnranked.ranked.messages.MessageUtils;
+import com.fnranked.ranked.teams.TeamUtils;
+import com.fnranked.ranked.util.UserUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -49,7 +50,7 @@ public class QueueListener extends ListenerAdapter {
                 userUtils.retrieveRegistrationData(event.getUserId(), data -> {
                     Region region = Region.parseRegion(data.getString("region"));
                     queueRepository.findByMatchTypeAndRegion(mType, region).ifPresent(q -> {
-                        var team = teamUtils.getTeam(mType, event.getUserIdLong());
+                        Team team = teamUtils.getTeam(mType, event.getUserIdLong());
                         if(queueChanger.joinQueue(q, team)) {
                             messageUtils.sendDMQueueMessage(team);
                             //delete message if queue in DMs and delete queue message
@@ -58,9 +59,9 @@ public class QueueListener extends ListenerAdapter {
                                 queueMessageRepository.delete(qMsg);
                             }
                         } else {
-                            event.getUser().openPrivateChannel().queue(pc -> {
-                                pc.sendMessage("You're already in a queue/match.").queue(s -> {}, e -> {});
-                            });
+                            event.getUser().openPrivateChannel().queue(pc -> pc.sendMessage("You're already in a queue/match.").queue(s -> {
+                            }, e -> {
+                            }));
                         }
                     });
                 });

@@ -19,6 +19,12 @@ public class PartyChannel {
     @Value("${fnranked.channels.party}")
     long partyChannelId;
 
+    /*
+        emoji U+2139U+fe0f = information_source
+    emoji U+1f6aa = door
+    emoji U+1f507 = mute
+    emoji U+1f508 = speaker
+     */
     public void initPartyChannel() {
         logger.info("Initializing party channel");
         TextChannel partyChannel = jdaContainer.getJda().getTextChannelById(partyChannelId);
@@ -32,13 +38,18 @@ public class PartyChannel {
             eb.setDescription(":door: Leave party\n" +
                     ":mute: Disable party invites\n" +
                     ":speaker: Enable party invites\n" +
-                    ":info: Info about your current party\n" +
+                    ":information_source: Info about your current party\n" +
                     "\n" +
                     "Commands\n" +
                     "invite @User - invite new member to your party\n" +
 //                "promote @User - make them party leader\n" +
                     "kick @User - kick someone from your party");
-            partyChannel.sendMessage(eb.build()).submit();
+            partyChannel.sendMessage(eb.build()).queue(message -> {
+                message.addReaction("U+2139U+fe0f").queue();
+                message.addReaction("U+1f6aa").queue();
+                message.addReaction("U+1f507").queue();
+                message.addReaction("U+1f508").queue();
+            });
         }
     }
 }

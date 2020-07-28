@@ -1,5 +1,6 @@
 package com.fnranked.ranked.jpa.entities;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -17,8 +18,6 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long Id;
 
-    boolean active;
-
     int size;
 
     @ManyToOne
@@ -34,14 +33,14 @@ public class Team {
     @OneToMany(cascade = CascadeType.ALL)
     List<Elo> eloList;
 
-    public Team() {
-
+    public Team(@NotNull Player captain) {
+        this.captain = captain;
     }
 
-    public Team(Player captain, int teamSize) {
+    public Team(@NotNull Player captain, List<Player> players) {
         this.captain = captain;
-        this.size = teamSize;
-        this.active = true;
+        this.size = players.size();
+        this.playerList = players;
     }
 
     @Override
@@ -59,14 +58,6 @@ public class Team {
 
     public void setId(long id) {
         Id = id;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public int getSize() {
