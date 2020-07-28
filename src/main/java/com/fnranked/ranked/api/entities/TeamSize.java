@@ -6,20 +6,20 @@ public enum TeamSize {
     TRIO(3, "3v3"),
     SQUAD(4, "4v4");
 
-    private int teamSize;
+    private int teamSizeInt;
     private String text;
 
-    TeamSize(int teamSize, String text) {
-        this.teamSize = teamSize;
+    TeamSize(int teamSizeInt, String text) {
+        this.teamSizeInt = teamSizeInt;
         this.text = text;
     }
 
     public static TeamSize fromInt(int teamSize) {
-        return values()[teamSize-1];
+        return values()[teamSize - 1];
     }
 
     public int toInt() {
-        return teamSize;
+        return teamSizeInt;
     }
 
     @Override

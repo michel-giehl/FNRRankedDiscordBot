@@ -10,7 +10,7 @@ public class Elo {
 
     @Id
     @GeneratedValue
-    long Id;
+    long id;
 
     @OneToOne
     MatchType matchType;
@@ -33,7 +33,7 @@ public class Elo {
     }
 
     public void setId(long id) {
-        Id = id;
+        this.id = id;
     }
 
     public void setMatchType(MatchType matchType) {
@@ -45,6 +45,6 @@ public class Elo {
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 }

@@ -52,14 +52,14 @@ public class PartyInviteUtils {
     @Autowired
     TeamRepository teamRepository;
 
-    public static final long inviteExpireTime = 30_000L;
+    public static final long INVITE_EXPIRE_TIME = 30_000L;
 
     @Scheduled(initialDelay = 15000, fixedRate = 30_000)
     @Transactional
     public void checkTTL() {
         JDA jda = jdaContainer.getJda();
         if (jda == null) return;
-        Timestamp deleteAllAfter = Timestamp.from(Instant.now().minusMillis(inviteExpireTime));
+        Timestamp deleteAllAfter = Timestamp.from(Instant.now().minusMillis(INVITE_EXPIRE_TIME));
         Collection<PartyInvite> partyInviteList = partyInviteRepository.findAllByTimeBefore(deleteAllAfter);
 
         for (PartyInvite partyInvite : partyInviteList) {
@@ -123,6 +123,7 @@ public class PartyInviteUtils {
      * @param inviterId person who sent invite
      * @param inviteeId person who received invite
      */
+    @Transactional
     public void createPartyInvite(Party party, long inviterId, long inviteeId) {
         //get users & build message
         JDA jda = jdaContainer.getJda();

@@ -2,7 +2,7 @@ package com.fnranked.ranked.api.entities;
 
 import java.util.Arrays;
 
-public enum  Region {
+public enum Region {
     EUROPE("EU"),
     NA_WEST("NAW"),
     NA_EAST("NAE"),
@@ -10,10 +10,10 @@ public enum  Region {
     ASIA("ASIA"),
     MIDDLE_EAST("ME");
 
-    private final String region;
+    private final String regionString;
 
-    Region(String region) {
-        this.region = region;
+    Region(String regionString) {
+        this.regionString = regionString;
     }
 
     public static Region parseRegion(String region) {
@@ -23,6 +23,6 @@ public enum  Region {
 
     @Override
     public String toString() {
-        return region;
+        return regionString;
     }
 }

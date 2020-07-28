@@ -89,7 +89,7 @@ public class TeamUtils {
         var playerOpt = playerRepository.findById(discordId);
         final Player player;
         if(playerOpt.isPresent()) {
-            System.out.println("PLAYER ALREADY EXISTS");
+            logger.info("PLAYER ALREADY EXISTS");
             return playerOpt.get();
         } else {
             player = new Player(discordId);
@@ -114,7 +114,7 @@ public class TeamUtils {
         }
         Team team = new Team(captain, players);
         teamRepository.save(team);
-        System.out.println("TEAM ID: " + team.getId());
-        System.out.println("TEAM SIZE: " + team.getSize());
+        logger.info(String.format("TEAM ID: %d", team.getId()));
+        logger.info(String.format("TEAM SIZE: %d", team.getSize()));
     }
 }

@@ -61,13 +61,13 @@ public class MessageUtils {
     @Value("${emote.success}")
     private long successEmoteId;
     @Value("${colors.fnranked}")
-    public int COLOR_FNRANKED;
+    public int colorFnranked;
     @Value("${colors.error}")
-    public int COLOR_ERROR;
+    public int colorError;
     @Value("${colors.success}")
-    public int COLOR_SUCCESS;
+    public int colorSuccess;
     @Value("${colors.loading}")
-    public int COLOR_LOADING;
+    public int colorLoading;
     @Value("${fnranked.embed.footer}")
     public String fnrankedFooter;
 
@@ -84,7 +84,7 @@ public class MessageUtils {
     }
 
     public int getFnRankedColor() {
-        return COLOR_FNRANKED;
+        return colorFnranked;
     }
 
     public void sendMessageEmbed(long userId, MessageEmbed messageEmbed) {
@@ -96,7 +96,7 @@ public class MessageUtils {
     public void sendErrorMessage(long userId, String errorMessage) {
         User user = jdaContainer.getJda().getUserById(userId);
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(COLOR_ERROR);
+        eb.setColor(colorError);
         eb.setDescription(errorMessage);
         eb.setTitle(getErrorEmote().getAsMention() + " Error!");
         if (user == null) return;
@@ -106,20 +106,20 @@ public class MessageUtils {
     public void sendSuccessMessage(long userId, String successMessage) {
         User user = jdaContainer.getJda().getUserById(userId);
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(COLOR_SUCCESS);
+        eb.setColor(colorSuccess);
         eb.setDescription(successMessage);
         eb.setTitle(getSuccessEmote().getAsMention() + " Success!");
         if(user == null) return;
         user.openPrivateChannel().flatMap(pc -> pc.sendMessage(eb.build())).queue();
     }
 
-    public MessageEmbed getQueueEmbed(ArrayList<MatchType> matchTypeList, @Nullable Region region) {
+    public MessageEmbed getQueueEmbed(List<MatchType> matchTypeList, @Nullable Region region) {
         String regionString = region == null ? "" : region.toString() + " ";
         StringBuilder desc = new StringBuilder();
         EmbedBuilder queueEmbed = new EmbedBuilder();
         queueEmbed.setColor(0xF7347A);
         queueEmbed.setTitle(regionString + "Ranked Matchmaking");
-        for(MatchType m : matchTypeList) {
+        for (MatchType m : matchTypeList) {
             //ex. :EMOTE: Ranked 1v1 Boxfight queue
             desc.append("\n")
                     .append(m.getDisplayEmote())
@@ -152,16 +152,14 @@ public class MessageUtils {
             List<User> users = userUtils.getUsersInTeam(team);
             if(users.isEmpty()) return;
             EmbedBuilder qMsg = new EmbedBuilder();
-            qMsg.setColor(COLOR_LOADING);
+            qMsg.setColor(colorLoading);
             qMsg.setTitle(getLoadingEmote().getAsMention() + " Looking for suitable opponent...");
             for(User user : users) {
-                user.openPrivateChannel().queue(pc -> {
-                    pc.sendMessage(qMsg.build()).queue(msg -> {
-                        msg.addReaction("❌").queue();
-                        qt.getMatchMessages().add(new MatchMessages(msg));
-                        queuedTeamRepository.save(qt);
-                    });
-                });
+                user.openPrivateChannel().queue(pc -> pc.sendMessage(qMsg.build()).queue(msg -> {
+                    msg.addReaction("❌").queue();
+                    qt.getMatchMessages().add(new MatchMessages(msg));
+                    queuedTeamRepository.save(qt);
+                }));
             }
         });
     }
@@ -171,20 +169,14 @@ public class MessageUtils {
             List<User> users = userUtils.getUsersInTeam(team.getTeam());
             if (users.isEmpty()) return;
             for (User user : users) {
-                user.openPrivateChannel().queue(pc -> {
-                    team.getMatchMessages().stream().filter(m -> m.getChannelId() == pc.getIdLong()).findFirst().ifPresent(qMsg -> {
-                        pc.retrieveMessageById(qMsg.getMessageId()).queue(msg -> {
-                            msg.delete().queue();
-                        });
-                    });
-                });
+                user.openPrivateChannel().queue(pc -> team.getMatchMessages().stream().filter(m -> m.getChannelId() == pc.getIdLong()).findFirst().ifPresent(qMsg -> pc.retrieveMessageById(qMsg.getMessageId()).queue(msg -> msg.delete().queue())));
             }
         });
     }
 
     public MessageEmbed getMatchNotAcceptedEmbed()  {
         EmbedBuilder notAccepted = new EmbedBuilder();
-        notAccepted.setColor(COLOR_ERROR);
+        notAccepted.setColor(colorError);
         notAccepted.setDescription("The match was canceled because someone didn't accept.");
         return notAccepted.build();
     }
@@ -192,13 +184,11 @@ public class MessageUtils {
     public void sendMatchReadyMessage(MatchTemp matchTemp, TextChannel tc) {
         tc.createInvite().setMaxAge(60*60).queue(invite -> {
             EmbedBuilder readyEmbed = new EmbedBuilder();
-            readyEmbed.setColor(COLOR_SUCCESS);
+            readyEmbed.setColor(colorSuccess);
             readyEmbed.setTitle(getSuccessEmote().getAsMention() + " Match ready");
             readyEmbed.setDescription("Your match is ready. Click [here](" + invite.getUrl() + ") to get to your match channel");
-            userUtils.getUsersInMatch(matchTemp).forEach(u -> {
-                u.openPrivateChannel()
-                        .flatMap(pc -> pc.sendMessage(readyEmbed.build())).queue();
-            });
+            userUtils.getUsersInMatch(matchTemp).forEach(u -> u.openPrivateChannel()
+                    .flatMap(pc -> pc.sendMessage(readyEmbed.build())).queue());
         });
 
     }
@@ -213,7 +203,7 @@ public class MessageUtils {
         MatchTemp matchTemp = matchTempOpt.get();
         EmbedBuilder acceptEmbed = new EmbedBuilder();
         acceptEmbed.setTitle("Match found");
-        acceptEmbed.setColor(COLOR_FNRANKED);
+        acceptEmbed.setColor(colorFnranked);
         long captainA = matchTemp.getTeamA().getCaptain().getId();
         long captainB = matchTemp.getTeamB().getCaptain().getId();
         JDA jda = jdaContainer.getJda();
@@ -226,15 +216,16 @@ public class MessageUtils {
                 double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType()).getEloRating();
                 Team oppTeam = matchTemp.getTeamA().equals(userTeam) ? matchTemp.getTeamB() : matchTemp.getTeamA();
                 double oppElo = eloUtils.getTeamElo(oppTeam.getId(), matchTemp.getMatchType()).getEloRating();
-                acceptEmbed.setDescription(String.format("A match has been found for you.\n```py\nYour elo: %.0f\nOpponents elo: %.0f``` Click :white_check_mark: to accept the match.", elo, oppElo));
+                acceptEmbed.setDescription(String.format("A match has been found for you.%n```py%nYour elo: %.0f%nOpponents elo: %.0f``` Click :white_check_mark: to accept the match.", elo, oppElo));
                 pc.sendMessage(acceptEmbed.build()).queue(msg -> {
                     msg.addReaction("✅").queue();
                     matchTemp.getMatchAcceptMessages().add(new MatchMessages(msg));
-                    if(a.get()) {
+                    if (a.get()) {
                         matchTempRepository.save(matchTemp);
                     }
                     a.set(true);
-                }, e-> {});
+                }, e -> {
+                });
             });
         }
     }
@@ -248,21 +239,21 @@ public class MessageUtils {
         boolean isTeamA = isWinner == rankedMatch.getTeamA().equals(winnerTeam);
         double eloChange = isTeamA ? rankedMatch.getTeamAEloChange() : rankedMatch.getTeamBEloChange();
 
-        String desc = String.format(":trophy: `%s`\n:skull_crossbones: `%s`", userUtils.getUsernamesInTeam(winnerTeam), userUtils.getUsernamesInTeam(loserTeam));
+        String desc = String.format(":trophy: `%s`%n:skull_crossbones: `%s`", userUtils.getUsernamesInTeam(winnerTeam), userUtils.getUsernamesInTeam(loserTeam));
 
-        desc += String.format("\n\n**Elo change:** ```diff\n%+.2f```", eloChange);
+        desc += String.format("%n%n**Elo change:** ```diff%n%+.2f```", eloChange);
 
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(isWinner ? COLOR_SUCCESS : COLOR_ERROR);
+        eb.setColor(isWinner ? colorSuccess : colorError);
         eb.setTitle(String.format("%s **Match Summary** %s", emoji, emoji));
         eb.setDescription(desc);
         return eb.build();
     }
 
-    public MessageEmbed getMatchCanceledEmbed(RankedMatch rankedMatch) {
+    public MessageEmbed getMatchCanceledEmbed() {
         String desc = "Your match was canceled";
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(COLOR_ERROR);
+        eb.setColor(colorError);
         eb.setTitle(String.format("%s **Match canceled** %s", getErrorEmote().getAsMention(), getErrorEmote().getAsMention()));
         eb.setDescription(desc);
         return eb.build();
@@ -275,7 +266,7 @@ public class MessageUtils {
         embed.setTitle(title);
         embed.setColor(0xF7347A);
         embed.setDescription(String.format("**Have fun and good luck! Remember: First to win %d rounds takes the W**", matchTemp.getMatchType().getRequiredRoundsToWin()));
-        embed.addField("**Map Code**", String.format("```glsl\n%s```", "1234-1234-1234"), false);
+        embed.addField("**Map Code**", String.format("```glsl%n%s```", "1234-1234-1234"), false);
         return embed.build();
     }
 

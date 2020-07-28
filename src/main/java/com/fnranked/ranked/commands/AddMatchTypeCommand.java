@@ -2,13 +2,12 @@ package com.fnranked.ranked.commands;
 
 import com.fnranked.ranked.api.entities.PermissionLevel;
 import com.fnranked.ranked.commands.commandhandler.listener.CommandListener;
-import com.fnranked.ranked.util.PermissionUtil;
 import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.repo.MatchTypeRepository;
+import com.fnranked.ranked.util.PermissionUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.internal.utils.EncodingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

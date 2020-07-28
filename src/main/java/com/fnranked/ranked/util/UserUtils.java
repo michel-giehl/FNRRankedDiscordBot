@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class UserUtils {
@@ -27,7 +26,7 @@ public class UserUtils {
     private OkHttpClient client;
 
     @Value("${registration.base_url}")
-    private String BASE_URL;
+    private String baseUrl;
 
     public UserUtils() {
         this.client = new OkHttpClient();
@@ -91,10 +90,11 @@ public class UserUtils {
 
     @Cacheable("epicUsers")
     public void retrieveRegistrationData(String userId, Result<JSONObject> result) {
-        Request req = new Request.Builder().get().url(BASE_URL + userId).build();
+        Request req = new Request.Builder().get().url(baseUrl + userId).build();
         client.newCall(req).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                //TODO implement this?
 
             }
 
@@ -110,6 +110,7 @@ public class UserUtils {
     }
 
     public void updateRank() {
+        //TODO implement this
 
     }
 }

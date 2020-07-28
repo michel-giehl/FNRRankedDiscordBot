@@ -1,10 +1,10 @@
 package com.fnranked.ranked.util;
 
 import com.fnranked.ranked.api.entities.Result;
-import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
+import com.fnranked.ranked.messages.MessageUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -78,7 +78,7 @@ public class ChannelCreator {
     public void addChannelPermissions(Member member, MatchTemp matchTemp) {
         TextChannel tc = member.getGuild().getTextChannelById(matchTemp.getMatchChannelId());
         if(tc == null) {
-            logger.trace("Match channel #" + matchTemp.getMatchChannelId() + " null.");
+            logger.trace(String.format("Match channel #%d null.", matchTemp.getMatchChannelId()));
             return;
         }
         tc.getManager().putPermissionOverride(member, List.of(Permission.VIEW_CHANNEL), null).queue();

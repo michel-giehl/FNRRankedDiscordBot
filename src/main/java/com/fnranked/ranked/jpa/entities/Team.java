@@ -16,7 +16,7 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
+    long id;
 
     int size;
 
@@ -33,6 +33,10 @@ public class Team {
     @OneToMany(cascade = CascadeType.ALL)
     List<Elo> eloList;
 
+    public Team() {
+        //Empty constructor
+    }
+
     public Team(@NotNull Player captain) {
         this.captain = captain;
     }
@@ -45,11 +49,11 @@ public class Team {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Team && this.Id == ((Team)obj).getId();
+        return obj instanceof Team && this.id == ((Team) obj).getId();
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public List<Elo> getEloList() {
@@ -57,7 +61,7 @@ public class Team {
     }
 
     public void setId(long id) {
-        Id = id;
+        this.id = id;
     }
 
     public int getSize() {

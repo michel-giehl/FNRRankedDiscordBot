@@ -7,7 +7,7 @@ public class CreativeMap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
+    long id;
 
     @OneToOne
     MatchType matchType;
@@ -19,11 +19,11 @@ public class CreativeMap {
     boolean aimAssistEnabled;
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(long id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getMapCode() {

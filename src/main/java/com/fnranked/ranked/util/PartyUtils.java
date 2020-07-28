@@ -47,7 +47,7 @@ public class PartyUtils {
     public MessageEmbed displayParty(Party party) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("Your Party");
-        embedBuilder.setColor(messageUtils.COLOR_FNRANKED);
+        embedBuilder.setColor(messageUtils.colorFnranked);
         StringBuilder descriptionBuilder = new StringBuilder();
         JDA jda = jdaContainer.getJda();
         descriptionBuilder.append("Captain:\n");
