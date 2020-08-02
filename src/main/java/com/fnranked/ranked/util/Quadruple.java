@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class Quadruple<A,B,C,D> {
 
-    A a;
-    B b;
-    C c;
-    D d;
+    private final A a;
+    private final B b;
+    private final C c;
+    private final D d;
 
     public Quadruple(A a, B b, C c, D d) {
         this.a = a;

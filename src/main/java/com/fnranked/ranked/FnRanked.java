@@ -5,6 +5,7 @@ import com.fnranked.ranked.commands.commandhandler.CommandHandlerBuilder;
 import com.fnranked.ranked.commands.commandhandler.CommandHandlerListener;
 import com.fnranked.ranked.commands.commandhandler.command.CommandBuilder;
 import com.fnranked.ranked.listener.*;
+import com.fnranked.ranked.util.ImportOldMatches;
 import com.fnranked.ranked.util.JDAContainer;
 import com.fnranked.ranked.util.PartyChannel;
 import net.dv8tion.jda.api.AccountType;
@@ -57,12 +58,17 @@ public class FnRanked {
     @Autowired
     PartyListener partyListener;
 
+    @Autowired
+    ImportOldMatches importOldMatches;
+
 
 
     @Value("${bot.token}")
     String token;
 
     public void initDiscordSession() throws InterruptedException {
+
+        importOldMatches.importMatches();
         JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
         jdaBuilder.setToken(token);
         jdaBuilder.setAutoReconnect(true);

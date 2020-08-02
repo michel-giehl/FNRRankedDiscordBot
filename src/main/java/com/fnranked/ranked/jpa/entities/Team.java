@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -20,6 +22,8 @@ public class Team {
 
     int size;
 
+    Timestamp timeCreated;
+
     @ManyToOne
     @NonNull
     Player captain;
@@ -34,11 +38,13 @@ public class Team {
     List<Elo> eloList;
 
     public Team() {
-        //Empty constructor
+
     }
 
-    public Team(@NotNull Player captain) {
+    public Team(Player captain, int teamSize) {
         this.captain = captain;
+        this.size = teamSize;
+        this.timeCreated = Timestamp.from(Instant.now());
     }
 
     public Team(@NotNull Player captain, List<Player> players) {
@@ -49,11 +55,11 @@ public class Team {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Team && this.id == ((Team) obj).getId();
+        return obj instanceof Team && this.Id == ((Team)obj).getId();
     }
 
     public long getId() {
-        return id;
+        return Id;
     }
 
     public List<Elo> getEloList() {
@@ -99,5 +105,13 @@ public class Team {
 
     public void setEloList(List<Elo> eloList) {
         this.eloList = eloList;
+    }
+
+    public Timestamp getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(Timestamp timeCreated) {
+        this.timeCreated = timeCreated;
     }
 }

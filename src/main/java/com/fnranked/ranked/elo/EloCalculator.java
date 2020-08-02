@@ -8,6 +8,7 @@ import com.fnranked.ranked.jpa.repo.RankedMatchRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class EloCalculator {
@@ -18,6 +19,8 @@ public class EloCalculator {
     TeamRepository teamRepository;
     @Autowired
     RankedMatchRepository rankedMatchRepository;
+    @Autowired
+    EloUtils eloUtils;
 
     //amount of elo that will be put in the pool
     private final static int c = 60;
@@ -54,11 +57,10 @@ public class EloCalculator {
         return new double[] { rating1, rating2 };
     }
 
+    @Transactional
     public RankedMatch updateRatings(RankedMatch rankedMatch) {
-        Team teamAWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamA().getId()).get();
-        Team teamBWithElo = teamRepository.findTeamByIdWithEloList(rankedMatch.getTeamB().getId()).get();
-        Elo teamAElo = teamAWithElo.getEloList().stream().filter(e -> e.getMatchType().equals(rankedMatch.getMatchType())).findFirst().get();
-        Elo teamBElo = teamBWithElo.getEloList().stream().filter(e -> e.getMatchType().equals(rankedMatch.getMatchType())).findFirst().get();
+        Elo teamAElo = eloUtils.getTeamElo(rankedMatch.getTeamA().getId(), rankedMatch.getMatchType());
+        Elo teamBElo = eloUtils.getTeamElo(rankedMatch.getTeamB().getId(), rankedMatch.getMatchType());
         double teamARating = teamAElo.getEloRating();
         double teamBRating = teamBElo.getEloRating();
         boolean teamAWon = rankedMatch.getWinner().equals(rankedMatch.getTeamA());

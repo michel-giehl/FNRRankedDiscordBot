@@ -1,6 +1,9 @@
 package com.fnranked.ranked.teams;
 
-import com.fnranked.ranked.jpa.entities.*;
+import com.fnranked.ranked.jpa.entities.Elo;
+import com.fnranked.ranked.jpa.entities.MatchType;
+import com.fnranked.ranked.jpa.entities.Player;
+import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.EloRepository;
 import com.fnranked.ranked.jpa.repo.PartyRepository;
 import com.fnranked.ranked.jpa.repo.PlayerRepository;
@@ -12,6 +15,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -89,7 +93,7 @@ public class TeamUtils {
         var playerOpt = playerRepository.findById(discordId);
         final Player player;
         if(playerOpt.isPresent()) {
-            logger.info("PLAYER ALREADY EXISTS");
+            System.out.println("PLAYER ALREADY EXISTS");
             return playerOpt.get();
         } else {
             player = new Player(discordId);
@@ -105,7 +109,8 @@ public class TeamUtils {
      * @param playerIds collection of players
      */
     @Transactional
-    public void createTeam(long captainId, Collection<Long> playerIds) {
+    public void createTeam(long captainId, long... playerIds) {
+        System.out.println("CREATING TEAM");
         Player captain = getPlayer(captainId);
         List<Player> players = new ArrayList<>();
         players.add(captain);

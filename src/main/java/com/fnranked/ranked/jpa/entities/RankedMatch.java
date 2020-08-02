@@ -80,6 +80,7 @@ public class RankedMatch {
     public RankedMatch(Team winner, Team loser, MatchType matchType, Region region, Instant time) {
         this.winner = winner;
         this.teamA = winner;
+        this.status = MatchStatus.FINISHED;
         this.teamB = loser;
         this.matchType = matchType;
         this.region = region;

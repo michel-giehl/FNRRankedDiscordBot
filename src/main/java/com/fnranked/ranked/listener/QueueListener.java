@@ -2,12 +2,12 @@ package com.fnranked.ranked.listener;
 
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.jpa.entities.Player;
-import com.fnranked.ranked.jpa.entities.Team;
-import com.fnranked.ranked.jpa.repo.*;
-import com.fnranked.ranked.matchmaking.QueueChanger;
 import com.fnranked.ranked.messages.MessageUtils;
-import com.fnranked.ranked.teams.TeamUtils;
+import com.fnranked.ranked.util.BanUtils;
 import com.fnranked.ranked.util.UserUtils;
+import com.fnranked.ranked.jpa.repo.*;
+import com.fnranked.ranked.teams.TeamUtils;
+import com.fnranked.ranked.matchmaking.QueueChanger;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -39,6 +39,8 @@ public class QueueListener extends ListenerAdapter {
     UserUtils userUtils;
     @Autowired
     QueuedTeamRepository queuedTeamRepository;
+    @Autowired
+    BanUtils banUtils;
 
     @Transactional
     @Override
@@ -50,7 +52,12 @@ public class QueueListener extends ListenerAdapter {
                 userUtils.retrieveRegistrationData(event.getUserId(), data -> {
                     Region region = Region.parseRegion(data.getString("region"));
                     queueRepository.findByMatchTypeAndRegion(mType, region).ifPresent(q -> {
-                        Team team = teamUtils.getTeam(mType, event.getUserIdLong());
+                        var team = teamUtils.getTeam(mType, event.getUserIdLong());
+                        if(banUtils.isBanned(team)) {
+                            //TODO send detailed ban information
+                            event.getUser().openPrivateChannel().flatMap(pc -> pc.sendMessage("You can't join the queue because someone in your team is temporarily banned from matchmaking")).queue();
+                            return;
+                        }
                         if(queueChanger.joinQueue(q, team)) {
                             messageUtils.sendDMQueueMessage(team);
                             //delete message if queue in DMs and delete queue message
