@@ -1,9 +1,6 @@
 package com.fnranked.ranked.teams;
 
-import com.fnranked.ranked.jpa.entities.Elo;
-import com.fnranked.ranked.jpa.entities.MatchType;
-import com.fnranked.ranked.jpa.entities.Player;
-import com.fnranked.ranked.jpa.entities.Team;
+import com.fnranked.ranked.jpa.entities.*;
 import com.fnranked.ranked.jpa.repo.EloRepository;
 import com.fnranked.ranked.jpa.repo.PartyRepository;
 import com.fnranked.ranked.jpa.repo.PlayerRepository;
@@ -15,9 +12,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +41,7 @@ public class TeamUtils {
     @Transactional
     public Team getSolo(MatchType matchType, long discordId) {
         Player player = getPlayer(discordId);
-        Optional<Team> teamOptional = teamRepository.findByCaptainAndSizeAndActiveIsTrue(player, 1);
+        Optional<Team> teamOptional = teamRepository.findByCaptainAndSize(player, 1);
         if(teamOptional.isPresent()) {
             return teamOptional.get();
         }
@@ -62,29 +57,14 @@ public class TeamUtils {
     @Transactional
     @Nullable
     public Team getTeam(MatchType matchType, long discordId) {
-        Optional<Player> playerOptional = playerRepository.findById(discordId);
         Optional<Party> partyOptional = partyRepository.findById(discordId);
-        if (playerOptional.isEmpty()) {
-            logger.error("User attempted to join a queue but was not a valid player.");
-            return null;
-        }
         if (partyOptional.isPresent()) {
             Party party = partyOptional.get();
-            Optional<Team> teamOptional = teamRepository.findByPlayerListIs(party.getPlayerList());
-            if (teamOptional.isPresent()) {
-                Team team = teamOptional.get();
-                team.setCaptain(playerOptional.get());
-                teamRepository.save(team);
-                return team;
-            } else {
-                Team team = new Team(playerOptional.get(), party.getPlayerList());
-                teamRepository.save(team);
-                return team;
-            }
+            Team team = new Team(party);
+            teamRepository.save(team);
+            return team;
         }
-        //Solo needs a special case because a "solo team" is not manually created by the player
-        //meaning the system needs to create a solo team if it doesn't exist.
-        //A team with size > 1 needs to be created manually created, meaning we can just return null if it doesn't exist
+        //Solo needs a special case because a "solo team" is not necessarily in a party
         else return getSolo(matchType, discordId);
     }
 

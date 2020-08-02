@@ -97,6 +97,8 @@ public class MatchUtils {
             rankedMatch = eloCalculator.updateRatings(rankedMatch);
         rankedMatchRepository.save(rankedMatch);
         //Get rid of all the trash
+        teamRepository.delete(matchTemp.getTeamA());
+        teamRepository.delete(matchTemp.getTeamB());
         matchTempRepository.delete(matchTemp);
         userUtils.kickMembersAfterMatch(matchTemp);
         channelCreator.deleteChannel(matchTemp);

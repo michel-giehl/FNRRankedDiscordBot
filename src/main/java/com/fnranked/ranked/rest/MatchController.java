@@ -39,6 +39,7 @@ public class MatchController {
                             @RequestHeader(value = "playerBId", defaultValue = "") long playerBId,
                             @RequestHeader(value = "region", defaultValue = "") String region,
                             @PathVariable long type, @PathVariable int teamSize) {
+        //TODO needs to be replaced from team to party
         Optional<Player> playerAOpt = playerRepository.findById(playerAId);
         Optional<Player> playerBOpt = playerRepository.findById(playerBId);
         if (playerAOpt.isEmpty() || playerBOpt.isEmpty()) {
@@ -47,8 +48,8 @@ public class MatchController {
         }
         Player playerA = playerAOpt.get();
         Player playerB = playerBOpt.get();
-        Optional<Team> teamAOpt = teamRepository.findByCaptainAndSizeAndActiveIsTrue(playerA, teamSize);
-        Optional<Team> teamBOpt = teamRepository.findByCaptainAndSizeAndActiveIsTrue(playerB, teamSize);
+        Optional<Team> teamAOpt = teamRepository.findByCaptainAndSize(playerA, teamSize);
+        Optional<Team> teamBOpt = teamRepository.findByCaptainAndSize(playerB, teamSize);
         Optional<MatchType> mTypeOpt = matchTypeRepository.findById(type);
         if (teamAOpt.isEmpty() || teamBOpt.isEmpty() || mTypeOpt.isEmpty()) {
             return Json.createObjectBuilder().add("status", 400).add("message", "Bad Request")

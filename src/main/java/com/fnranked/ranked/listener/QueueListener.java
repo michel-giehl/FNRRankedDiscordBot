@@ -2,12 +2,12 @@ package com.fnranked.ranked.listener;
 
 import com.fnranked.ranked.api.entities.Region;
 import com.fnranked.ranked.jpa.entities.Player;
+import com.fnranked.ranked.jpa.repo.*;
+import com.fnranked.ranked.matchmaking.QueueChanger;
 import com.fnranked.ranked.messages.MessageUtils;
+import com.fnranked.ranked.teams.TeamUtils;
 import com.fnranked.ranked.util.BanUtils;
 import com.fnranked.ranked.util.UserUtils;
-import com.fnranked.ranked.jpa.repo.*;
-import com.fnranked.ranked.teams.TeamUtils;
-import com.fnranked.ranked.matchmaking.QueueChanger;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -77,7 +77,6 @@ public class QueueListener extends ListenerAdapter {
     }
 
     @Transactional
-
     @Override
     public void onPrivateMessageReactionAdd(@Nonnull PrivateMessageReactionAddEvent event) {
         if(event.getUser().isBot()) return;
