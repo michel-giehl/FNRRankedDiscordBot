@@ -12,7 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface QueueRepository extends CrudRepository<Queue, Long> {
-    Optional<Queue> findById(long Id);
+    Optional<Queue> findById(long id);
+
     Optional<Queue> findByMatchTypeAndRegion(MatchType a, Region r);
     Optional<Queue> findByQueueingContaining(QueuedTeam t);
 

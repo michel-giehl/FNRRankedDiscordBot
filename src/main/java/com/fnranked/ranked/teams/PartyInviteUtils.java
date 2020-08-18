@@ -19,10 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -49,21 +52,23 @@ public class PartyInviteUtils {
     @Autowired
     TeamRepository teamRepository;
 
-    public final long inviteExpireTime = 30_000L;
+    public static final long INVITE_EXPIRE_TIME = 30_000L;
 
     @Scheduled(initialDelay = 15000, fixedRate = 30_000)
     @Transactional
     public void checkTTL() {
         JDA jda = jdaContainer.getJda();
         if (jda == null) return;
-        Timestamp deleteAllAfter = Timestamp.from(Instant.now().minusMillis(inviteExpireTime));
-        partyInviteRepository.findAllByTimeBefore(deleteAllAfter).iterator().forEachRemaining(partyInvite -> {
+        Timestamp deleteAllAfter = Timestamp.from(Instant.now().minusMillis(INVITE_EXPIRE_TIME));
+        Collection<PartyInvite> partyInviteList = partyInviteRepository.findAllByTimeBefore(deleteAllAfter);
+
+        for (PartyInvite partyInvite : partyInviteList) {
             partyInviteRepository.delete(partyInvite);
             User invitee = jda.getUserById(partyInvite.getInviteeId());
             messageUtils.sendErrorMessage(partyInvite.getInviteeId(), "Duo invite timed out.");
             if (invitee == null) return;
             messageUtils.sendErrorMessage(partyInvite.getInviterId(), invitee.getAsTag() + " did not respond to your invite");
-        });
+        }
     }
 
     /**
@@ -91,7 +96,7 @@ public class PartyInviteUtils {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void acceptInvite(PartyInvite partyInvite) {
         partyInviteRepository.delete(partyInvite);
         Emote pepeD = jdaContainer.getJda().getEmoteById(712672033263058979L);
@@ -118,6 +123,7 @@ public class PartyInviteUtils {
      * @param inviterId person who sent invite
      * @param inviteeId person who received invite
      */
+    @Transactional
     public void createPartyInvite(Party party, long inviterId, long inviteeId) {
         //get users & build message
         JDA jda = jdaContainer.getJda();
@@ -127,7 +133,7 @@ public class PartyInviteUtils {
         if (invitee == null) return;
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(messageUtils.getFnRankedColor());
-        eb.setTitle(String.format(":people_holding_hands: %s  has invited you to <@%s>'s party :people_holding_hands:", inviter.getAsTag(), party.getId()));
+        eb.setTitle(String.format(":people_holding_hands: %s  has invited you to %s's party :people_holding_hands:", inviter.getAsTag(), Objects.requireNonNull(jda.getUserById(party.getId())).getAsTag()));
         eb.setDescription(String.format(
                 "%s to accept the invite" +
                         "\n%s to decline the invite" +

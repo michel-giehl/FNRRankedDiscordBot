@@ -1,17 +1,12 @@
 package com.fnranked.ranked.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.internal.utils.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CompletableFuture;
 
 @Component
 public class PartyChannel {
@@ -24,12 +19,20 @@ public class PartyChannel {
     @Value("${fnranked.channels.party}")
     long partyChannelId;
 
+    /*
+        emoji U+2139U+fe0f = information_source
+    emoji U+1f6aa = door
+    emoji U+1f507 = mute
+    emoji U+1f508 = speaker
+     */
     public void initPartyChannel() {
         logger.info("Initializing party channel");
         TextChannel partyChannel = jdaContainer.getJda().getTextChannelById(partyChannelId);
         if (partyChannel == null) {
             logger.error("Failure to initialize party channel due to it not being found.");
         } else {
+
+
             EmbedBuilder eb = new EmbedBuilder();
             eb.setTitle("**How to create a Party**");
             eb.setDescription(":door: Leave party\n" +
@@ -41,31 +44,12 @@ public class PartyChannel {
                     "invite @User - invite new member to your party\n" +
 //                "promote @User - make them party leader\n" +
                     "kick @User - kick someone from your party");
-
-            MessageEmbed embed = eb.build();
-            partyChannel.getIterableHistory().queue(messages -> {
-                for(Message msg : messages) {
-                    if(!msg.getEmbeds().isEmpty()) {
-                        if(msg.getEmbeds().get(0).equals(embed)) {
-                            msg.clearReactions().queue();
-                            addPartyMessageReactions(msg);
-                            return;
-                        }
-                    }
-                }
-                partyChannel.sendMessage(eb.build()).queue(this::addPartyMessageReactions);
+            partyChannel.sendMessage(eb.build()).queue(message -> {
+                message.addReaction("U+2139U+fe0f").queue();
+                message.addReaction("U+1f6aa").queue();
+                message.addReaction("U+1f507").queue();
+                message.addReaction("U+1f508").queue();
             });
         }
-    }
-
-    private void addPartyMessageReactions(Message msg) {
-        // door
-        msg.addReaction(EncodingUtil.decodeCodepoint("U+1F6AA")).queue();
-        // speaker
-        msg.addReaction(EncodingUtil.decodeCodepoint("U+1F508")).queue();
-        // mute
-        msg.addReaction(EncodingUtil.decodeCodepoint("U+1F507")).queue();
-        // information_source
-        msg.addReaction(EncodingUtil.decodeCodepoint("U+2139")).queue();
     }
 }

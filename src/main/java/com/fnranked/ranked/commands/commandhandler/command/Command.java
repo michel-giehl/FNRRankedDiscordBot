@@ -3,7 +3,7 @@ package com.fnranked.ranked.commands.commandhandler.command;
 import com.fnranked.ranked.commands.commandhandler.listener.CommandListener;
 import net.dv8tion.jda.api.Permission;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Command {
     private CommandBuilder commandBuilder;
@@ -28,11 +28,11 @@ public class Command {
         return commandBuilder.botReply;
     }
 
-    public ArrayList<Long> getCommandChannels() {
+    public List<Long> getCommandChannels() {
         return commandBuilder.commandChannels;
     }
 
-    public ArrayList<Permission> getCommandPermissions() {
+    public List<Permission> getCommandPermissions() {
         return commandBuilder.commandPermissions;
     }
 

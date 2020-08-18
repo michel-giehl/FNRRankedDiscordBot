@@ -38,8 +38,8 @@ public class QueueMessage {
         return isDMQueue;
     }
 
-    public void setDMQueue(boolean DMQueue) {
-        isDMQueue = DMQueue;
+    public void setDMQueue(boolean dMQueue) {
+        isDMQueue = dMQueue;
     }
 
     public long getChannelId() {

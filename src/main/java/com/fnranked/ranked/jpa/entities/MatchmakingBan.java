@@ -11,7 +11,7 @@ public class MatchmakingBan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
+    long id;
 
     boolean banned;
 

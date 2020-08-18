@@ -2,8 +2,8 @@ package com.fnranked.ranked.listener;
 
 import com.fnranked.ranked.api.entities.MatchVote;
 import com.fnranked.ranked.jpa.entities.Team;
-import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
+import com.fnranked.ranked.messages.MessageUtils;
 import com.fnranked.ranked.util.MatchUtils;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -49,11 +49,13 @@ public class MatchVoteListener extends ListenerAdapter {
                     break;
                 //cancel
                 case "\uD83C\uDFF3️":
-                    if(isTeamA) {
+                    if (isTeamA) {
                         matchTemp.setTeamAVote(MatchVote.CANCEL);
                     } else {
                         matchTemp.setTeamBVote(MatchVote.CANCEL);
                     }
+                    break;
+                default:
                     break;
             }
             if(matchTemp.getTeamAVote() == matchTemp.getTeamBVote() && matchTemp.getTeamAVote() != MatchVote.PENDING) {

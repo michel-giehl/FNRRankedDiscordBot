@@ -1,14 +1,21 @@
 package com.fnranked.ranked.rest;
 
+import com.fnranked.ranked.jpa.entities.MatchType;
+import com.fnranked.ranked.jpa.entities.Player;
+import com.fnranked.ranked.jpa.entities.Team;
 import com.fnranked.ranked.jpa.repo.MatchTypeRepository;
-import com.fnranked.ranked.jpa.repo.RankedMatchRepository;
 import com.fnranked.ranked.jpa.repo.PlayerRepository;
+import com.fnranked.ranked.jpa.repo.RankedMatchRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.json.Json;
+import java.util.Optional;
 
 @RestController
 public class MatchController {
@@ -32,24 +39,25 @@ public class MatchController {
                             @RequestHeader(value = "playerBId", defaultValue = "") long playerBId,
                             @RequestHeader(value = "region", defaultValue = "") String region,
                             @PathVariable long type, @PathVariable int teamSize) {
-        var playerAOpt = playerRepository.findById(playerAId);
-        var playerBOpt = playerRepository.findById(playerBId);
-        if(playerAOpt.isEmpty() || playerBOpt.isEmpty()) {
+        //TODO needs to be replaced from team to party
+        Optional<Player> playerAOpt = playerRepository.findById(playerAId);
+        Optional<Player> playerBOpt = playerRepository.findById(playerBId);
+        if (playerAOpt.isEmpty() || playerBOpt.isEmpty()) {
             return Json.createObjectBuilder().add("status", 400).add("message", "Bad Request")
                     .add("reason", "Player(s) not found").build().toString();
         }
-        var playerA = playerAOpt.get();
-        var playerB = playerBOpt.get();
-        var teamAOpt = teamRepository.findByCaptainAndSizeAndActiveIsTrue(playerA, teamSize);
-        var teamBOpt = teamRepository.findByCaptainAndSizeAndActiveIsTrue(playerB, teamSize);
-        var mTypeOpt = matchTypeRepository.findById(type);
-        if(teamAOpt.isEmpty() || teamBOpt.isEmpty() || mTypeOpt.isEmpty()) {
+        Player playerA = playerAOpt.get();
+        Player playerB = playerBOpt.get();
+        Optional<Team> teamAOpt = teamRepository.findByCaptainAndSize(playerA, teamSize);
+        Optional<Team> teamBOpt = teamRepository.findByCaptainAndSize(playerB, teamSize);
+        Optional<MatchType> mTypeOpt = matchTypeRepository.findById(type);
+        if (teamAOpt.isEmpty() || teamBOpt.isEmpty() || mTypeOpt.isEmpty()) {
             return Json.createObjectBuilder().add("status", 400).add("message", "Bad Request")
                     .add("reason", "Team(s)/MatchType not found").build().toString();
         }
-        var teamA = teamAOpt.get();
-        var teamB = teamBOpt.get();
-        var matchType = mTypeOpt.get();
+        Team teamA = teamAOpt.get();
+        Team teamB = teamBOpt.get();
+        MatchType matchType = mTypeOpt.get();
         //var match = new RankedMatch(teamA, teamB, matchType, TeamSize.values()[teamSize-1], Region.valueOf(region));
         //rankedMatchRepository.save(match);
         return Json.createObjectBuilder().add("status", 200)

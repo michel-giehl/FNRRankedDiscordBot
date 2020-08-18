@@ -8,7 +8,7 @@ import java.util.List;
 public class Player {
 
     @Id
-    long Id;
+    long id;
 
     double eloMultiplier;
 
@@ -28,8 +28,8 @@ public class Player {
 
     }
 
-    public Player(long Id) {
-        this.Id = Id;
+    public Player(long id) {
+        this.id = id;
         this.banStage = 0;
     }
 
@@ -58,11 +58,11 @@ public class Player {
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(long id) {
-        Id = id;
+        this.id = id;
     }
 
     public double getEloMultiplier() {
@@ -87,5 +87,13 @@ public class Player {
 
     public void setDuoInvitesEnabled(boolean duoInvitesEnabled) {
         this.duoInvitesEnabled = duoInvitesEnabled;
+    }
+
+    @Override
+    public boolean equals(Object player) {
+        if (player instanceof Player) {
+            return ((Player) player).getId() == this.getId();
+        }
+        return false;
     }
 }

@@ -1,7 +1,6 @@
 package com.fnranked.ranked.commands.commandhandler;
 
 import com.fnranked.ranked.commands.commandhandler.command.Command;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @Component
@@ -20,7 +18,7 @@ public class CommandHandlerListener extends ListenerAdapter {
     private CommandHandlerBuilder commandHandlerBuilder;
 
     public CommandHandlerListener() {
-
+        //empty constructor
     }
 
     public void init(CommandHandlerBuilder commandHandlerBuilder) {

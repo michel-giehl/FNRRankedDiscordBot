@@ -10,7 +10,7 @@ public class Queue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
+    long id;
 
     @OneToOne
     MatchType matchType;
@@ -29,7 +29,7 @@ public class Queue {
     List<QueuedTeam> queueing;
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public MatchType getMatchType() {

@@ -10,7 +10,7 @@ public class QueuedTeam {
 
     @Id
     @GeneratedValue
-    long Id;
+    long id;
 
     @OneToOne
     Team team;
@@ -30,7 +30,7 @@ public class QueuedTeam {
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public Team getTeam() {
@@ -42,7 +42,7 @@ public class QueuedTeam {
     }
 
     public void setId(long id) {
-        Id = id;
+        this.id = id;
     }
 
     public void setTeam(Team team) {

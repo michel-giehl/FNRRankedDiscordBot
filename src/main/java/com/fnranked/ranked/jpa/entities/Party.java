@@ -14,14 +14,14 @@ import java.util.List;
 public class Party {
 
     @Id
-    private long id;
+    private Long id;
 
     @OneToOne
     @NonNull
     @MapsId
     Player captain;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     List<Player> playerList;
 
     public Party() {
@@ -37,6 +37,16 @@ public class Party {
         return captain.getId();
     }
 
+    @NonNull
+    public Player getCaptain() {
+        return captain;
+    }
+
+    public void setCaptain(Player captain) {
+        this.captain = captain;
+        this.id = captain.getId();
+    }
+
     public List<Player> getPlayerList() {
         return playerList;
     }
@@ -45,15 +55,8 @@ public class Party {
         playerList.add(player);
     }
 
-    public boolean removePlayerById(long playerId) {
-        boolean result = false;
-        for (Player player : playerList) {
-            if (player.getId() == playerId) {
-                playerList.remove(player);
-                result = true;
-            }
-        }
-        return result;
+    public void removePlayer(Player player) {
+        playerList.remove(player);
 
     }
 

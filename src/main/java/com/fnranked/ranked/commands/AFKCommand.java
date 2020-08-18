@@ -2,8 +2,8 @@ package com.fnranked.ranked.commands;
 
 import com.fnranked.ranked.api.entities.PermissionLevel;
 import com.fnranked.ranked.commands.commandhandler.listener.CommandListener;
-import com.fnranked.ranked.util.PermissionUtil;
 import com.fnranked.ranked.jpa.repo.MatchTempRepository;
+import com.fnranked.ranked.util.PermissionUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -26,11 +26,12 @@ public class AFKCommand extends ListenerAdapter implements CommandListener{
 
     @Override
     public void onCommand(Member sender, TextChannel channel, Message message, String[] args) {
+        //TODO: afk command
         if(!permissionUtil.hasPermission(sender.getUser(), PermissionLevel.STAFF)) return;
     }
 
     @Override
     public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
-
+        //TODO: afk reaction implementation
     }
 }
