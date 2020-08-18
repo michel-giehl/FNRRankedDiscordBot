@@ -35,9 +35,6 @@ public class Team {
     @ManyToMany(cascade = CascadeType.ALL)
     List<RankedMatch> rankedMatches;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    List<Elo> eloList;
-
     public Team() {
 
     }
@@ -56,10 +53,6 @@ public class Team {
 
     public long getId() {
         return Id;
-    }
-
-    public List<Elo> getEloList() {
-        return eloList;
     }
 
     public void setId(long id) {
@@ -105,10 +98,6 @@ public class Team {
 
     public void setRankedMatches(List<RankedMatch> rankedMatches) {
         this.rankedMatches = rankedMatches;
-    }
-
-    public void setEloList(List<Elo> eloList) {
-        this.eloList = eloList;
     }
 
     public Timestamp getTimeCreated() {

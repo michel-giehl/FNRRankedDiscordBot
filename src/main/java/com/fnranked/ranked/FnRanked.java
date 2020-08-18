@@ -68,7 +68,7 @@ public class FnRanked {
 
     public void initDiscordSession() throws InterruptedException {
 
-        importOldMatches.importMatches();
+        // importOldMatches.importMatches();
         JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
         jdaBuilder.setToken(token);
         jdaBuilder.setAutoReconnect(true);

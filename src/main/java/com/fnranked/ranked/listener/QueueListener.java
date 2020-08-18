@@ -49,10 +49,12 @@ public class QueueListener extends ListenerAdapter {
         queueMessageRepository.findByQueueMessageId(event.getMessageIdLong()).ifPresent(qMsg -> {
             matchTypeRepository.findByDisplayEmote(event.getReactionEmote().getAsCodepoints()).ifPresent(mType -> {
                 userUtils.retrieveRegistrationData(event.getUserId(), data -> {
+                    System.out.println("user data found: " + data.toString());
                     Region region = Region.parseRegion(data.getString("region"));
                     queueRepository.findByMatchTypeAndRegion(mType, region).ifPresent(q -> {
                         var team = teamUtils.getTeam(mType, event.getUserIdLong());
                         if(banUtils.isBanned(team)) {
+                            System.out.println("Team banned");
                             //TODO send detailed ban information
                             event.getUser().openPrivateChannel().flatMap(pc -> pc.sendMessage("You can't join the queue because someone in your team is temporarily banned from matchmaking")).queue();
                             return;

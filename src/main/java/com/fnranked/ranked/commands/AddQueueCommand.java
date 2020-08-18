@@ -43,6 +43,7 @@ public class AddQueueCommand implements CommandListener {
             queueRepository.save(queue);
             channel.sendMessage("Queue added").queue();
         }catch(Exception e) {
+            e.printStackTrace();
             channel.sendMessage("Invalid syntax once again. ").queue();
         }
     }

@@ -216,9 +216,9 @@ public class MessageUtils {
             u.openPrivateChannel().queue(pc -> {
                 // Get elo for both teams
                 Team userTeam = matchUtils.getTeamByUserId(u.getIdLong(), matchTemp);
-                double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType()).getEloRating();
+                double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType());
                 Team oppTeam = matchTemp.getTeamA().equals(userTeam) ? matchTemp.getTeamB() : matchTemp.getTeamA();
-                double oppElo = eloUtils.getTeamElo(oppTeam.getId(), matchTemp.getMatchType()).getEloRating();
+                double oppElo = eloUtils.getTeamElo(oppTeam.getId(), matchTemp.getMatchType());
                 acceptEmbed.setDescription(String.format("A match has been found for you.\n```py\nYour elo: %.0f\nOpponents elo: %.0f``` Click :white_check_mark: to accept the match.", elo, oppElo));
                 pc.sendMessage(acceptEmbed.build()).queue(msg -> {
                     msg.addReaction("✅").queue();

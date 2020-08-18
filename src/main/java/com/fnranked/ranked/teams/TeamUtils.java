@@ -1,10 +1,8 @@
 package com.fnranked.ranked.teams;
 
-import com.fnranked.ranked.jpa.entities.Elo;
 import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Player;
 import com.fnranked.ranked.jpa.entities.Team;
-import com.fnranked.ranked.jpa.repo.EloRepository;
 import com.fnranked.ranked.jpa.repo.PlayerRepository;
 import com.fnranked.ranked.jpa.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +22,6 @@ public class TeamUtils {
     PlayerRepository playerRepository;
     @Autowired
     TeamRepository teamRepository;
-    @Autowired
-    EloRepository eloRepository;
 
     /**
      * Finds the team object for a member. Creates player/team entry if it doesn't exist.
@@ -41,9 +37,6 @@ public class TeamUtils {
         }
         Team team = new Team(player, 1);
         team.setPlayerList(List.of(player));
-        //TODO don't handle ELO here.
-        Elo elo = new Elo(matchType, 200);
-        team.setEloList(List.of(elo));
         teamRepository.save(team);
         return team;
     }

@@ -1,9 +1,8 @@
 package com.fnranked.ranked.jpa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 public class Player {
@@ -22,6 +21,9 @@ public class Player {
 
     Timestamp banStageDecrease;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    List<Elo> eloList;
+
     public Player() {
 
     }
@@ -29,6 +31,30 @@ public class Player {
     public Player(long Id) {
         this.Id = Id;
         this.banStage = 0;
+    }
+
+    public int getBanStage() {
+        return banStage;
+    }
+
+    public void setBanStage(int banStage) {
+        this.banStage = banStage;
+    }
+
+    public Timestamp getBanStageDecrease() {
+        return banStageDecrease;
+    }
+
+    public void setBanStageDecrease(Timestamp banStageDecrease) {
+        this.banStageDecrease = banStageDecrease;
+    }
+
+    public List<Elo> getEloList() {
+        return eloList;
+    }
+
+    public void setEloList(List<Elo> eloList) {
+        this.eloList = eloList;
     }
 
     public long getId() {

@@ -56,11 +56,11 @@ public class ImportOldMatches {
         }
     }
 
-    @Transactional
     public void importMatches() {
         loadDuoData();
         JSONArray matches = getMatchData();
         List<MatchType> matchTypeList = (ArrayList<MatchType>)matchTypeRepository.findAll();
+        int failed = 0;
         for(int i = 0; i < matches.length(); i++) {
             try {
                 if (i % 50 == 0) {
@@ -86,8 +86,10 @@ public class ImportOldMatches {
                 }
             }catch(Exception e) {
                 System.out.println("FAILED TO IMPORT A MATCH. SKIPPING");
+                failed++;
             }
         }
+        System.out.println("FINISHED IMPORTING MATCHES. FAILS: " + failed);
     }
 
     private Team getTeam(MatchType matchType, long id) {

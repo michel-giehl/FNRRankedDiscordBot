@@ -112,8 +112,7 @@ public class Matchmaking {
     }
 
     private double getEloRatingForMatchType(MatchType matchType, QueuedTeam queuedTeam) {
-        Elo elo = eloUtils.getTeamElo(queuedTeam.getTeam().getId(), matchType);
-        return  elo.getEloRating();
+        return eloUtils.getTeamElo(queuedTeam.getTeam().getId(), matchType);
         //Getting elo should always be successful if they have managed to queue for it but this is to avoid any NPEs
         //logger.warn(String.format("Error finding elo for QueuedTeam with team id of \"%s\", and MatchType \"%s\"(%s), defaulting to 200.", queuedTeam.getTeam().getId(), matchType.getName(), matchType.getId()));
         //return 200;
