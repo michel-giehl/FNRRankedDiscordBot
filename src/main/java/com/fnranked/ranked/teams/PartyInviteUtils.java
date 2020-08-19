@@ -75,7 +75,6 @@ public class PartyInviteUtils {
      * Creates duo invite entity and destroys it if it still exists after ttl ran out.
      * Do not actually call this. Use @link {this#createDuoInvite}
      */
-    @Transactional
     public void createInviteEntity(Party party, long inviterId, long inviteeId, long messageId) {
         PartyInvite partyInvite = new PartyInvite(party, inviterId, inviteeId, messageId);
         partyInviteRepository.save(partyInvite);
@@ -84,7 +83,6 @@ public class PartyInviteUtils {
     /**
      * Decline a duo invite
      */
-    @Transactional
     public void declineInvite(PartyInvite partyInvite, boolean declinedAndDisabled) {
         partyInviteRepository.delete(partyInvite);
         User invitee = jdaContainer.getJda().getUserById(partyInvite.getInviteeId());

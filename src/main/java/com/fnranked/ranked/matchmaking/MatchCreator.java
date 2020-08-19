@@ -61,6 +61,8 @@ public class MatchCreator {
                 }
             }, ttl);
             logger.info(String.format("New %s %s Match.", region.name(), matchType.getName()));
+        } else {
+            logger.error("Failed to create match: No map code present.");
         }
     }
 }

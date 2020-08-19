@@ -46,7 +46,7 @@ public class SendQueueMessageCommand implements CommandListener {
         }
         List<Queue> queues = queueRepository.findAllByEnabledIsTrue();
         Set<String> emotes = queues.stream().map(q -> q.getMatchType().getDisplayEmote()).collect(Collectors.toSet());
-        c.sendMessage(messageUtils.getQueueEmbed(((ArrayList<MatchType>)matchTypeRepository.findAll()), null)).queue(msg -> {
+        c.sendMessage(messageUtils.getQueueEmbed(queueRepository.findAllByEnabledIsTrue().stream().map(Queue::getMatchType).collect(Collectors.toList()), null)).queue(msg -> {
             QueueMessage queueMessage = new QueueMessage();
             queueMessage.setChannelId(msg.getChannel().getIdLong());
             queueMessage.setQueueMessageId(msg.getIdLong());

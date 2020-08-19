@@ -66,6 +66,7 @@ public class Matchmaking {
                         }
                         notToMatch.add(teamA);
                         notToMatch.add(teamB);
+                        System.out.println("Creating match");
                         matchCreator.createMatch(queue.getMatchType(), queue.getRegion(), teamA.getTeam(), teamB.getTeam());
                     }
                 }

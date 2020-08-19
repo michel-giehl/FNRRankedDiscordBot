@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PlayerRepository extends CrudRepository<Player, Long> {
     Optional<Player> findById(long id);
-    @Query("SELECT p FROM Player p LEFT JOIN FETCH p.eloList WHERE p.Id = :id")
+    @Query("SELECT p FROM Player p LEFT JOIN FETCH p.eloList WHERE p.id = :id")
     Optional<Player> findWithEloList(long id);
 }

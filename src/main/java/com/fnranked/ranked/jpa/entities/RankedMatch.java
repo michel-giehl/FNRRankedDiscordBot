@@ -2,6 +2,7 @@ package com.fnranked.ranked.jpa.entities;
 
 import com.fnranked.ranked.api.entities.MatchStatus;
 import com.fnranked.ranked.api.entities.Region;
+import lombok.Data;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -15,6 +16,7 @@ import java.time.Instant;
  * @version 1.0
  */
 @Entity
+@Data
 public class RankedMatch {
 
     @Id
@@ -92,108 +94,5 @@ public class RankedMatch {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof RankedMatch && this.Id == ((RankedMatch)obj).getId();
-    }
-
-    public long getId() {
-        return Id;
-    }
-
-    public Timestamp getStartingTime() {
-        return startingTime;
-    }
-
-    @NonNull
-    public Team getTeamA() {
-        return teamA;
-    }
-
-    public void setTeamA(@NonNull Team teamA) {
-        this.teamA = teamA;
-    }
-
-    @NonNull
-    public Team getTeamB() {
-        return teamB;
-    }
-
-    public void setTeamB(@NonNull Team teamB) {
-        this.teamB = teamB;
-    }
-
-    @NonNull
-    public Team getWinner() {
-        return winner;
-    }
-
-    public void setWinner(@NonNull Team winner) {
-        this.winner = winner;
-    }
-
-    public double getTeamAEloChange() {
-        return teamAEloChange;
-    }
-
-    public void setTeamAEloChange(double teamAEloChange) {
-        this.teamAEloChange = teamAEloChange;
-    }
-
-    public double getTeamBEloChange() {
-        return teamBEloChange;
-    }
-
-    public void setTeamBEloChange(double teamBEloChange) {
-        this.teamBEloChange = teamBEloChange;
-    }
-
-    public Region getRegion() {
-        return region;
-    }
-
-    public Timestamp getEndingTime() {
-        return endingTime;
-    }
-
-    public void setEndingTime(Timestamp endingTime) {
-        this.endingTime = endingTime;
-    }
-
-    public long getGuildId() {
-        return guildId;
-    }
-
-    public void setGuildId(long guildId) {
-        this.guildId = guildId;
-    }
-
-    public void setStartingTime(Timestamp startingTime) {
-        this.startingTime = startingTime;
-    }
-
-    public MatchStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(MatchStatus status) {
-        this.status = status;
-    }
-
-    public double getEloMultiplier() {
-        return eloMultiplier;
-    }
-
-    public void setEloMultiplier(double eloMultiplier) {
-        this.eloMultiplier = eloMultiplier;
-    }
-
-    public MatchType getMatchType() {
-        return matchType;
-    }
-
-    public void setMatchType(MatchType matchType) {
-        this.matchType = matchType;
-    }
-
-    public void setRegion(Region region) {
-        this.region = region;
     }
 }

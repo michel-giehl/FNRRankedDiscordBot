@@ -1,6 +1,8 @@
 package com.fnranked.ranked.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,6 @@ public class PartyChannel {
             logger.error("Failure to initialize party channel due to it not being found.");
         } else {
 
-
             EmbedBuilder eb = new EmbedBuilder();
             eb.setTitle("**How to create a Party**");
             eb.setDescription(":door: Leave party\n" +
@@ -44,12 +45,28 @@ public class PartyChannel {
                     "invite @User - invite new member to your party\n" +
 //                "promote @User - make them party leader\n" +
                     "kick @User - kick someone from your party");
-            partyChannel.sendMessage(eb.build()).queue(message -> {
-                message.addReaction("U+2139U+fe0f").queue();
-                message.addReaction("U+1f6aa").queue();
-                message.addReaction("U+1f507").queue();
-                message.addReaction("U+1f508").queue();
+
+            MessageEmbed embed = eb.build();
+            logger.info("purging messages");
+            partyChannel.getIterableHistory().queue(messages -> {
+                for(Message m : messages) {
+                    if(!m.getEmbeds().isEmpty() && m.getEmbeds().get(0).equals(embed)) {
+                        m.clearReactions().queue(then -> addReactions(m));
+                        return;
+                    } else {
+                        m.delete().queue();
+                    }
+                }
+                logger.info("Sending new message");
+                partyChannel.sendMessage(eb.build()).queue(this::addReactions);
             });
         }
+    }
+
+    private void addReactions(Message message) {
+        message.addReaction("U+2139U+fe0f").queue();
+        message.addReaction("U+1f6aa").queue();
+        message.addReaction("U+1f507").queue();
+        message.addReaction("U+1f508").queue();
     }
 }

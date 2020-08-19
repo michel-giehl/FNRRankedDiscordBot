@@ -1,9 +1,11 @@
 package com.fnranked.ranked.jpa.entities;
 
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +15,7 @@ import java.util.List;
  * Teams are a temporary entity formed when entering a queue from the user's party,
  */
 @Entity
+@Data
 public class Team {
 
     @Id
@@ -28,9 +31,6 @@ public class Team {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<Player> playerList;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    List<Elo> eloList;
-
     public Team() {
         //Empty constructor
     }
@@ -43,7 +43,7 @@ public class Team {
     public Team(@NotNull Party party) {
         this.captain = party.getCaptain();
         this.size = party.getPlayerList().size();
-        this.playerList = party.getPlayerList();
+        this.playerList = new ArrayList<>(party.getPlayerList());
     }
 
     public Team(@NotNull Player captain, List<Player> players) {
@@ -57,36 +57,4 @@ public class Team {
         return obj instanceof Team && this.id == ((Team) obj).getId();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public List<Elo> getEloList() {
-        return eloList;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    @NonNull
-    public Player getCaptain() {
-        return captain;
-    }
-
-    public List<Player> getPlayerList() {
-        return playerList;
-    }
-
-    public void setPlayerList(List<Player> playerList) {
-        this.playerList = playerList;
-    }
-
-    public void setEloList(List<Elo> eloList) {
-        this.eloList = eloList;
-    }
 }

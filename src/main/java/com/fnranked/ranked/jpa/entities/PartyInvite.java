@@ -1,5 +1,7 @@
 package com.fnranked.ranked.jpa.entities;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,6 +10,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 @Entity
+@Data
 public class PartyInvite {
 
     @Id
@@ -35,25 +38,5 @@ public class PartyInvite {
         this.inviterId = inviterId;
         this.messageId = messageId;
         this.time = Timestamp.from(Instant.now());
-    }
-
-    public Party getParty() {
-        return party;
-    }
-
-    public long getInviterId() {
-        return inviterId;
-    }
-
-    public long getInviteeId() {
-        return inviteeId;
-    }
-
-    public Timestamp getTime() {
-        return time;
-    }
-
-    public long getId() {
-        return id;
     }
 }

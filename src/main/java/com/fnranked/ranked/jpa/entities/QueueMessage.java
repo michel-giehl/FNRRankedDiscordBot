@@ -1,5 +1,6 @@
 package com.fnranked.ranked.jpa.entities;
 
+import lombok.Data;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -9,6 +10,7 @@ import javax.persistence.ManyToMany;
 import java.util.Map;
 
 @Entity
+@Data
 public class QueueMessage {
 
     @Id
@@ -26,35 +28,7 @@ public class QueueMessage {
     @ManyToMany
     Map<Long, Queue> queues;
 
-    public long getQueueMessageId() {
-        return queueMessageId;
-    }
+    public QueueMessage() {
 
-    public void setQueueMessageId(long queueMessageId) {
-        this.queueMessageId = queueMessageId;
-    }
-
-    public boolean isDMQueue() {
-        return isDMQueue;
-    }
-
-    public void setDMQueue(boolean dMQueue) {
-        isDMQueue = dMQueue;
-    }
-
-    public long getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(long channelId) {
-        this.channelId = channelId;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 }

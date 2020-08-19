@@ -136,7 +136,7 @@ public class MessageUtils {
     public void sendQueueMessage(User user, MessageChannel messageChannel) {
         List<Queue> queues = queueRepository.findAllByEnabledIsTrue();
         Set<String> emotes = queues.stream().map(q -> q.getMatchType().getDisplayEmote()).collect(Collectors.toSet());
-        messageChannel.sendMessage(getQueueEmbed(((ArrayList<MatchType>)matchTypeRepository.findAll()), null)).queue(msg -> {
+        messageChannel.sendMessage(getQueueEmbed(queueRepository.findAllByEnabledIsTrue().stream().map(Queue::getMatchType).collect(Collectors.toList()), null)).queue(msg -> {
             QueueMessage queueMessage = new QueueMessage();
             queueMessage.setDMQueue(true);
             queueMessage.setUserId(user.getIdLong());
@@ -213,9 +213,9 @@ public class MessageUtils {
             u.openPrivateChannel().queue(pc -> {
                 // Get elo for both teams
                 Team userTeam = matchUtils.getTeamByUserId(u.getIdLong(), matchTemp);
-                double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType()).getEloRating();
+                double elo = eloUtils.getTeamElo(userTeam.getId(), matchTemp.getMatchType());
                 Team oppTeam = matchTemp.getTeamA().equals(userTeam) ? matchTemp.getTeamB() : matchTemp.getTeamA();
-                double oppElo = eloUtils.getTeamElo(oppTeam.getId(), matchTemp.getMatchType()).getEloRating();
+                double oppElo = eloUtils.getTeamElo(oppTeam.getId(), matchTemp.getMatchType());
                 acceptEmbed.setDescription(String.format("A match has been found for you.%n```py%nYour elo: %.0f%nOpponents elo: %.0f``` Click :white_check_mark: to accept the match.", elo, oppElo));
                 pc.sendMessage(acceptEmbed.build()).queue(msg -> {
                     msg.addReaction("✅").queue();

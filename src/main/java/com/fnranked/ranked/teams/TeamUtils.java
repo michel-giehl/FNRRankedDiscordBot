@@ -37,14 +37,13 @@ public class TeamUtils {
      * @return (solo) team of the user.
      */
     @Transactional
-    public Team getSolo(MatchType matchType, long discordId) {
+    public Team getSolo(long discordId) {
         Player player = getPlayer(discordId);
         Optional<Team> teamOptional = teamRepository.findByCaptainAndSize(player, 1);
         if(teamOptional.isPresent()) {
             return teamOptional.get();
         }
-        Team team = new Team(player);
-        team.setPlayerList(List.of(player));
+        Team team = new Team(player, List.of(player));
         teamRepository.save(team);
         return team;
     }
@@ -54,13 +53,14 @@ public class TeamUtils {
     public Team getTeam(MatchType matchType, long discordId) {
         Optional<Party> partyOptional = partyRepository.findById(discordId);
         if (partyOptional.isPresent()) {
+            System.out.println("Party present");
             Party party = partyOptional.get();
             Team team = new Team(party);
             teamRepository.save(team);
             return team;
         }
         //Solo needs a special case because a "solo team" is not necessarily in a party
-        else return getSolo(matchType, discordId);
+        else return getSolo(discordId);
     }
 
     @Transactional

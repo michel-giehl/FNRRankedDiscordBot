@@ -12,8 +12,11 @@ import java.util.Optional;
 @Repository
 public interface TeamRepository extends CrudRepository<Team, Long> {
     Optional<Team> findByCaptainAndSize(Player captain, int teamSize);
-    Optional<Team> findByPlayerListContainingAndSizeAndActiveIsTrue(Player containing, int teamSize);
+
     Optional<Team> findByCaptainAndPlayerListContaining(Player captain, Player contain);
+
     Iterable<Team> findAllByPlayerListContaining(Player player);
+
     @Query(value = "SELECT t from Team t LEFT JOIN FETCH t.playerList where t.id = :id")
     Optional<Team> findTeamByIdWithPlayerList(@Param("id") long id);
+}

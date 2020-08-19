@@ -1,5 +1,6 @@
 package com.fnranked.ranked.jpa.entities;
 
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * Parties are used by the PartyBuilder system.
  */
 @Entity
+@Data
 public class Party {
 
     @Id
@@ -31,24 +33,6 @@ public class Party {
     public Party(@NotNull Player captain) {
         this.captain = captain;
         playerList = Collections.singletonList(captain);
-    }
-
-    public long getId() {
-        return captain.getId();
-    }
-
-    @NonNull
-    public Player getCaptain() {
-        return captain;
-    }
-
-    public void setCaptain(Player captain) {
-        this.captain = captain;
-        this.id = captain.getId();
-    }
-
-    public List<Player> getPlayerList() {
-        return playerList;
     }
 
     public void addPlayer(Player player) {

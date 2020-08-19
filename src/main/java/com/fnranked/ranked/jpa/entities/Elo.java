@@ -1,11 +1,14 @@
 package com.fnranked.ranked.jpa.entities;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
+@Data
 public class Elo {
 
     @Id
@@ -30,21 +33,5 @@ public class Elo {
     public Elo(MatchType matchType, double eloRating) {
         this.matchType = matchType;
         this.eloRating = eloRating;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setMatchType(MatchType matchType) {
-        this.matchType = matchType;
-    }
-
-    public void setEloRating(double eloRating) {
-        this.eloRating = eloRating;
-    }
-
-    public long getId() {
-        return id;
     }
 }

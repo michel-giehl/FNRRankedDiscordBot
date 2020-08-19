@@ -1,11 +1,13 @@
 package com.fnranked.ranked.jpa.entities;
 
+import lombok.Data;
 import net.dv8tion.jda.internal.utils.EncodingUtil;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 public class MatchType {
 
     @Id
@@ -25,60 +27,12 @@ public class MatchType {
     @OneToMany
     List<CreativeMap> mapPool;
 
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public String getDisplayEmote() {
         return EncodingUtil.decodeCodepoint(displayEmote);
     }
 
     public void setDisplayEmote(String displayEmote) {
         this.displayEmote = EncodingUtil.encodeCodepoints(displayEmote);
-    }
-
-    public List<CreativeMap> getMapPool() {
-        return mapPool;
-    }
-
-    public void setMapPool(List<CreativeMap> mapPool) {
-        this.mapPool = mapPool;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getTeamSize() {
-        return teamSize;
-    }
-
-    public void setTeamSize(int teamSize) {
-        this.teamSize = teamSize;
-    }
-
-    public int getRequiredRoundsToWin() {
-        return requiredRoundsToWin;
-    }
-
-    public void setRequiredRoundsToWin(int requiredRoundsToWin) {
-        this.requiredRoundsToWin = requiredRoundsToWin;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getSeason() {
-        return season;
-    }
-
-    public void setSeason(int season) {
-        this.season = season;
     }
 
     @Override

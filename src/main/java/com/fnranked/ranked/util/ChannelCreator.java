@@ -44,8 +44,7 @@ public class ChannelCreator {
     @SuppressWarnings("all")
     public void createMatchChannel(MatchTemp tempMatch, Result<TextChannel> result) {
         var matchServerOpt = loadBalancer.getBestMatchServer();
-        if (matchServerOpt.getFirst() == null) {
-            logger.warn("Unable to create match channel for " + tempMatch.toString() + " due to the JDA Guild with id #" + tempMatch.getGuildId() + " being null");
+        if (matchServerOpt == null || matchServerOpt.getFirst() == null) {
             return;
         }
         Guild guild = matchServerOpt.getFirst();
