@@ -30,7 +30,7 @@ public class PartyBuilder {
     public Party getOrCreatePartyWithPlayer(User captain) {
         Optional<Player> playerOptional = playerRepository.findById(captain.getIdLong());
         if (playerOptional.isPresent()) {
-            Optional<Party> partyOptional = partyRepository.findByPlayerListContaining(playerOptional.get());
+            Optional<Party> partyOptional = partyRepository.findByPlayerListContaining(playerOptional.get().getId());
             if (partyOptional.isPresent()) {
                 return partyOptional.get();
             } else {

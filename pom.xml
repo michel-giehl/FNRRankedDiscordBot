@@ -192,6 +192,31 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.1.0</version>
+                <configuration>
+                    <from>
+                        <image>adoptopenjdk/openjdk11-openj9</image>
+                    </from>
+                    <to>
+                        <image>docker.io/djdanny1/fnranked:matchbot</image>
+                        <auth>
+                            <username>fnranked</username>
+                            <password>_%H7Lt+Qrj)cN4&amp;</password>
+                        </auth>
+                    </to>
+                    <container>
+                        <mainClass>com.fnranked.ranked.FnRankedBoot</mainClass>
+                        <ports>
+                            <port>9095</port>
+                        </ports>
+                    </container>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>

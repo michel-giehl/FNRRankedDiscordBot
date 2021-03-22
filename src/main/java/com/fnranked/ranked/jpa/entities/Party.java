@@ -23,8 +23,8 @@ public class Party {
     @MapsId
     Player captain;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    List<Player> playerList;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH, mappedBy = "players")
+    List<Player> players;
 
     public Party() {
 
@@ -32,15 +32,15 @@ public class Party {
 
     public Party(@NotNull Player captain) {
         this.captain = captain;
-        playerList = Collections.singletonList(captain);
+        players = Collections.singletonList(captain);
     }
 
     public void addPlayer(Player player) {
-        playerList.add(player);
+        players.add(player);
     }
 
     public void removePlayer(Player player) {
-        playerList.remove(player);
+        players.remove(player);
 
     }
 

@@ -1,6 +1,5 @@
 package com.fnranked.ranked.jpa.entities;
 
-import jdk.jfr.DataAmount;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -27,6 +26,9 @@ public class Player {
 
     @OneToMany(cascade = CascadeType.ALL)
     List<Elo> eloList;
+
+    @ManyToOne
+    Party party;
 
     public Player() {
     }

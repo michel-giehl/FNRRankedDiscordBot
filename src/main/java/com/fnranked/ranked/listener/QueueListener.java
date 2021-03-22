@@ -45,7 +45,9 @@ public class QueueListener extends ListenerAdapter {
     @Transactional
     @Override
     public void onMessageReactionAdd(@Nonnull MessageReactionAddEvent event) {
-        if(event.getUser().isBot()) return;
+        if (event.getUser().isBot()) return;
+        userUtils.checkIfUserRegistered(event.getUserIdLong());
+
         queueMessageRepository.findByQueueMessageId(event.getMessageIdLong()).ifPresent(qMsg -> {
             //TODO use util class to get rid of getAsCodepoints()
             matchTypeRepository.findByDisplayEmote(event.getReactionEmote().getAsCodepoints()).ifPresent(mType -> {
@@ -54,7 +56,7 @@ public class QueueListener extends ListenerAdapter {
                     Region region = Region.parseRegion(data.getString("region"));
                     queueRepository.findByMatchTypeAndRegion(mType, region).ifPresent(q -> {
                         var team = teamUtils.getTeam(mType, event.getUserIdLong());
-                        if(banUtils.isBanned(team)) {
+                        if (banUtils.isBanned(team)) {
                             System.out.println("Team banned");
                             //TODO send detailed ban information
                             event.getUser().openPrivateChannel().flatMap(pc -> pc.sendMessage("You can't join the queue because someone in your team is temporarily banned from matchmaking")).queue();

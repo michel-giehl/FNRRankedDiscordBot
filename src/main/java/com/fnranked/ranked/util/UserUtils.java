@@ -1,10 +1,10 @@
 package com.fnranked.ranked.util;
 
-import com.fnranked.ranked.api.entities.PermissionLevel;
 import com.fnranked.ranked.api.entities.Result;
 import com.fnranked.ranked.jpa.entities.MatchTemp;
 import com.fnranked.ranked.jpa.entities.Player;
 import com.fnranked.ranked.jpa.entities.Team;
+import com.fnranked.ranked.jpa.repo.PlayerRepository;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,20 +37,23 @@ public class UserUtils {
     JDAContainer jdaContainer;
     @Autowired
     PermissionUtil permissionUtil;
+    @Autowired
+    PlayerRepository playerRepository;
 
     /**
      * Finds all members for a given match
+     *
      * @param matchTemp match object
      * @return list of members in that match who are also in the guild
      */
     public List<Member> getAllMembersInTempMatch(MatchTemp matchTemp) {
         List<Member> memberList = new ArrayList<>();
         Guild guild = jdaContainer.getJda().getGuildById(matchTemp.getMatchServer().getId());
-        if(guild == null) return memberList;
+        if (guild == null) return memberList;
         List<User> users = getUsersInMatch(matchTemp);
-        for(User user : users) {
+        for (User user : users) {
             Member m = guild.getMember(user);
-            if(m != null)
+            if (m != null)
                 memberList.add(m);
         }
         return memberList;
@@ -65,10 +69,10 @@ public class UserUtils {
     public List<User> getUsersInTeam(Team team) {
         List<User> userList = new ArrayList<>();
         var players = team.getPlayerList();
-        for(Player player : players) {
+        for (Player player : players) {
             long userId = player.getId();
             User u = jdaContainer.getJda().getUserById(userId);
-            if(u != null)
+            if (u != null)
                 userList.add(u);
         }
         return userList;
@@ -79,14 +83,14 @@ public class UserUtils {
         return users.stream().map(User::getName).collect(Collectors.joining(", "));
     }
 
-    public void kickMembersAfterMatch(MatchTemp matchtemp) {
-        List<Member> memberToKick = getAllMembersInTempMatch(matchtemp);
-        for(Member m : memberToKick) {
-            if(!permissionUtil.hasPermission(m.getUser(), PermissionLevel.STAFF)) {
-                m.getGuild().kick(m).queue();
-            }
-        }
-    }
+//    public void kickMembersAfterMatch(MatchTemp matchtemp) {
+//        List<Member> memberToKick = getAllMembersInTempMatch(matchtemp);
+//        for (Member m : memberToKick) {
+//            if (!permissionUtil.hasPermission(m.getUser(), PermissionLevel.STAFF)) {
+//                m.getGuild().kick(m).queue();
+//            }
+//        }
+//    }
 
     @Cacheable("epicUsers")
     public void retrieveRegistrationData(String userId, Result<JSONObject> result) {
@@ -95,18 +99,33 @@ public class UserUtils {
             @Override
             public void onFailure(Call call, IOException e) {
                 //TODO implement this?
+                result.invoke(new JSONObject("{Fail: user not registered or fail in the call.}"));
 
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     String res = response.body().string();
                     result.invoke(new JSONObject(res));
                 }
                 response.close();
             }
         });
+    }
+
+    public boolean checkIfUserRegistered(long userId) {
+        Optional<Player> playerOptional = playerRepository.findById(userId);
+        if (playerOptional.isPresent()) {
+            return true;
+        } else {
+            retrieveRegistrationData(String.valueOf(userId), data -> {
+                System.out.println("user data found: " + data.toString());
+                Player player = new Player(userId);
+                playerRepository.save(player);
+            });
+            return false;
+        }
     }
 
     public void updateRank() {
