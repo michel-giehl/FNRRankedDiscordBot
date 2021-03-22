@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +53,7 @@ public class PartyInviteUtils {
 
     public static final long INVITE_EXPIRE_TIME = 30_000L;
 
-    @Scheduled(initialDelay = 15000, fixedRate = 30_000)
+//    @Scheduled(initialDelay = 15000, fixedRate = 30_000)
     @Transactional
     public void checkTTL() {
         JDA jda = jdaContainer.getJda();

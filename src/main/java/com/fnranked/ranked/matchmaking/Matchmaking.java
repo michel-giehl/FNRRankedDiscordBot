@@ -1,7 +1,6 @@
 package com.fnranked.ranked.matchmaking;
 
 import com.fnranked.ranked.elo.EloUtils;
-import com.fnranked.ranked.jpa.entities.Elo;
 import com.fnranked.ranked.jpa.entities.MatchType;
 import com.fnranked.ranked.jpa.entities.Queue;
 import com.fnranked.ranked.jpa.entities.QueuedTeam;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -43,7 +41,7 @@ public class Matchmaking {
     @Autowired
     EloUtils eloUtils;
 
-    @Scheduled(initialDelay = 15_000L, fixedRate = 5000L)
+//    @Scheduled(initialDelay = 15_000L, fixedRate = 10000L)
     public void findMatchesFromQueues() {
         Iterable<Queue> queues = queueRepository.findAll();
         for (Queue queue : queues) {

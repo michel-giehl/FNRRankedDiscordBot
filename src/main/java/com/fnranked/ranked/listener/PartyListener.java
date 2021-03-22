@@ -121,7 +121,7 @@ public class PartyListener extends ListenerAdapter {
                     partyUtils.displayPartyForPlayer(player);
                     break;
                 case "U+1f6aa":
-                    partyOptional = partyRepository.findByPlayerListContaining(playerOptional.get());
+                    partyOptional = partyRepository.findByPlayerListContaining(playerOptional.get().getId());
                     if (partyOptional.isPresent()) {
                         Party party = partyOptional.get();
                         if (party.getCaptain().equals(player)) {

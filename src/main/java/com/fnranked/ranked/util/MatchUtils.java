@@ -100,7 +100,7 @@ public class MatchUtils {
         teamRepository.delete(matchTemp.getTeamA());
         teamRepository.delete(matchTemp.getTeamB());
         matchTempRepository.delete(matchTemp);
-        userUtils.kickMembersAfterMatch(matchTemp);
+//        userUtils.kickMembersAfterMatch(matchTemp);
         channelCreator.deleteChannel(matchTemp);
         final RankedMatch finalRankedMatch = rankedMatch;
         //DM users

@@ -33,7 +33,7 @@ public class PartyUtils {
 
 
     public void displayPartyForPlayer(Player player) {
-        Optional<Party> partyOptional = partyRepository.findByPlayerListContaining(player);
+        Optional<Party> partyOptional = partyRepository.findByPlayerListContaining(player.getId());
 
         if (partyOptional.isPresent()) {
             Optional<Party> partyWithInvite = partyRepository.findById(partyOptional.get().getId());

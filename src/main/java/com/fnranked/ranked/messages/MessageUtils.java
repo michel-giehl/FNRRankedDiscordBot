@@ -207,9 +207,14 @@ public class MessageUtils {
         long captainA = matchTemp.getTeamA().getCaptain().getId();
         long captainB = matchTemp.getTeamB().getCaptain().getId();
         JDA jda = jdaContainer.getJda();
-        var users = List.of(jda.getUserById(captainA), jda.getUserById(captainB));
+        User captainAUser = jda.getUserById(captainA);
+        User captainBUser = jda.getUserById(captainB);
+        List<User> users = new ArrayList<>();
+        if (captainAUser != null && captainBUser != null) {
+            users = List.of(captainAUser, captainBUser);
+        }
         AtomicBoolean a = new AtomicBoolean(false);
-        for(User u : users) {
+        for (User u : users) {
             u.openPrivateChannel().queue(pc -> {
                 // Get elo for both teams
                 Team userTeam = matchUtils.getTeamByUserId(u.getIdLong(), matchTemp);

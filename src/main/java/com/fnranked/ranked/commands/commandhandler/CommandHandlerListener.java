@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Locale;
 
 @Component
 public class CommandHandlerListener extends ListenerAdapter {
@@ -36,7 +37,7 @@ public class CommandHandlerListener extends ListenerAdapter {
 
         String command = args[0].replace(commandPrefix, "");
         commandHandlerBuilder.commandList.forEach(c -> {
-            if (c.getCommandName().equals(command)) {
+            if (c.getCommandName().toUpperCase(Locale.ROOT).equals(command.toUpperCase())) {
                 handleCommand(c, event.getMember(), event.getChannel(), event.getMessage(), args);
             }
         });
